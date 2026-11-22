@@ -4,6 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Body - Real-Time Multiplayer English Game (Grade 3)</title>
+
+  <!-- Inline SVG Favicon to eliminate 404 Console Errors -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧍‍♂️</text></svg>">
   
   <!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -130,7 +133,7 @@
     }
     .btn-sand:hover { background-color: #F8F4ED; }
 
-    /* Keyframe Animations */
+    /* Animations */
     @keyframes breathing {
       0%, 100% { transform: translateY(0px) scale(1); }
       50% { transform: translateY(-3px) scale(1.005); }
@@ -141,20 +144,6 @@
       96% { transform: scaleY(0.1); }
     }
 
-    @keyframes springBounce {
-      0% { transform: scale(1); }
-      30% { transform: scale(1.12) rotate(-2deg); }
-      50% { transform: scale(0.96) rotate(2deg); }
-      75% { transform: scale(1.04); }
-      100% { transform: scale(1); }
-    }
-
-    @keyframes shakeError {
-      0%, 100% { transform: translateX(0); }
-      20%, 60% { transform: translateX(-6px); }
-      40%, 80% { transform: translateX(6px); }
-    }
-
     .character-idle {
       animation: breathing 4s ease-in-out infinite;
       transform-origin: bottom center;
@@ -163,14 +152,6 @@
     .eye-blink {
       animation: blink 4.5s infinite;
       transform-origin: center;
-    }
-
-    .bounce-target {
-      animation: springBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    .shake-target {
-      animation: shakeError 0.4s ease-in-out;
     }
 
     /* SVG Interactive Target Styling */
@@ -187,6 +168,11 @@
       stroke-dasharray: none;
       stroke-width: 4px;
       animation: pulseHighlight 1.5s infinite alternate;
+    }
+
+    .host-view .body-part-hotspot {
+      pointer-events: none !important;
+      cursor: default !important;
     }
 
     @keyframes pulseHighlight {
@@ -341,7 +327,7 @@
         <!-- Room Code Input -->
         <div>
           <label class="block text-xs font-bold text-stone-600 mb-1">Kode Room (5 Chars):</label>
-          <input type="text" id="join-room-input" placeholder="BODY1" maxlength="5" uppercase 
+          <input type="text" id="join-room-input" placeholder="BODY1" maxlength="5" 
                  class="w-full px-4 py-3 font-mono text-center text-2xl font-700 rounded-xl border-2 border-sandborder focus:border-coral outline-none uppercase tracking-widest bg-sand/30">
         </div>
 
@@ -355,9 +341,7 @@
         <!-- Avatar Selector -->
         <div>
           <label class="block text-xs font-bold text-stone-600 mb-1.5">Pilih Avatar:</label>
-          <div id="avatar-selector-grid" class="grid grid-cols-6 gap-2">
-            <!-- Dynamically populated avatar badges -->
-          </div>
+          <div id="avatar-selector-grid" class="grid grid-cols-6 gap-2"></div>
         </div>
 
         <!-- Join Button -->
@@ -508,6 +492,24 @@
         </div>
       </div>
 
+      <!-- Live Answer Counter & Host Controls Banner -->
+      <div id="host-live-status-bar" class="tactile-card w-full max-w-3xl px-4 py-2.5 bg-sand-light border-2 border-sandborder flex flex-wrap items-center justify-between gap-3 text-xs font-bold text-stone-700 hidden">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-sage animate-ping"></span>
+          <span>Siswa Menjawab: <span id="host-answered-count" class="font-mono text-coral font-bold text-sm">0 / 0</span></span>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <label class="flex items-center gap-1.5 cursor-pointer text-stone-600 text-[11px]">
+            <input type="checkbox" id="auto-advance-toggle" checked onchange="toggleAutoAdvance(this.checked)" class="rounded border-sandborder text-sage focus:ring-sage">
+            <span>Auto-Next Soal</span>
+          </label>
+          <button id="host-manual-next-btn" onclick="teacherNextQuestion()" class="tactile-btn btn-coral px-3 py-1 text-xs">
+            Soal Berikutnya ➡️
+          </button>
+        </div>
+      </div>
+
       <!-- MODE 1 INTERACTIVE SVG CHARACTER BOARD -->
       <div id="mode1-board" class="tactile-card w-full max-w-4xl p-4 flex flex-col md:flex-row items-center justify-center gap-6 bg-white hidden">
         
@@ -527,11 +529,6 @@
             <span class="text-xl mb-1">👆</span>
             <p class="text-xs font-semibold text-stone-500">Ketuk gambar bagian tubuh!</p>
           </div>
-
-          <!-- Teacher Control Button (Only visible on Host view) -->
-          <button id="host-next-q-btn" onclick="teacherNextQuestion()" class="tactile-btn btn-coral w-full py-3 text-sm hidden">
-            Soal Berikutnya (Host) ➔
-          </button>
         </div>
 
       </div>
@@ -547,7 +544,7 @@
           
           <!-- Scaffolding Toggle Button -->
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-stone-500">Pin Target #${m2TargetIndex+1}</span>
+            <span id="m2-target-pin-label" class="text-xs font-bold text-stone-500">Pin Target #1</span>
             <button id="wordbank-toggle-btn" onclick="toggleWordBankHint()" class="tactile-btn btn-mustard text-xs px-2.5 py-1">
               💡 Word Bank Hint
             </button>
@@ -724,8 +721,13 @@
     let gameState = {
       status: 'LOBBY', // 'LOBBY', 'PLAYING', 'EXIT_TICKET', 'FINISHED'
       mode: 1,
-      currentIndex: 0
+      currentIndex: 0,
+      autoAdvance: true
     };
+
+    let hasAnsweredCurrentQ = false;
+    let localRenderedIndex = -1;
+    let autoNextTimeout = null;
 
     let m2TargetIndex = 0;
     let m2CurrentSpelling = [];
@@ -842,14 +844,11 @@
 
     function showStudentJoinForm() {
       renderAvatarGrid();
-      
-      // Auto-fill room code from URL ?room=XXXXX parameter if present
       const urlParams = new URLSearchParams(window.location.search);
       const roomParam = urlParams.get('room');
       if (roomParam) {
         document.getElementById('join-room-input').value = roomParam.toUpperCase();
       }
-
       showScreen('screen-student-join');
     }
 
@@ -880,13 +879,27 @@
         status: 'LOBBY',
         mode: 1,
         currentIndex: 0,
+        autoAdvance: true,
         createdAt: Date.now()
       });
 
       // Listen to Players & Room State
-      onValue(ref(db, `rooms/${currentRoomCode}/players`), (snapshot) => {
-        const players = snapshot.val() || {};
+      onValue(ref(db, `rooms/${currentRoomCode}`), (snapshot) => {
+        const roomData = snapshot.val();
+        if (!roomData) return;
+
+        gameState.status = roomData.status || 'LOBBY';
+        gameState.mode = roomData.mode || 1;
+        gameState.currentIndex = roomData.currentIndex || 0;
+        gameState.autoAdvance = roomData.autoAdvance !== false;
+
+        const players = roomData.players || {};
         updateTeacherDashboard(players);
+
+        // Check live question progress & auto advance
+        if (gameState.status === 'PLAYING') {
+          evaluateQuestionProgress(players);
+        }
       });
 
       showScreen('screen-teacher-dashboard');
@@ -916,7 +929,7 @@
         </div>
       `).join('');
 
-      // Populate Live Leaderboard (Sorted by score)
+      // Populate Live Leaderboard
       const sorted = [...playerList].sort((a, b) => (b[1].score || 0) - (a[1].score || 0));
       leaderboardBox.innerHTML = sorted.map(([id, p], idx) => `
         <div class="flex items-center justify-between p-2 rounded-xl bg-sand/30 border border-sandborder text-xs">
@@ -930,11 +943,39 @@
       `).join('');
     }
 
+    function evaluateQuestionProgress(players) {
+      const playerList = Object.values(players);
+      const totalStudents = playerList.length;
+      const answeredCount = playerList.filter(p => p.lastAnsweredIndex === gameState.currentIndex).length;
+
+      const badge = document.getElementById('host-answered-count');
+      if (badge) badge.innerText = `${answeredCount} / ${totalStudents}`;
+
+      // Auto advance trigger if all answered
+      if (gameState.autoAdvance && totalStudents > 0 && answeredCount >= totalStudents) {
+        if (!autoNextTimeout) {
+          autoNextTimeout = setTimeout(() => {
+            autoNextTimeout = null;
+            teacherNextQuestion();
+          }, 1500); // 1.5s delay so students see feedback
+        }
+      }
+    }
+
+    async function toggleAutoAdvance(isVal) {
+      if (!currentRoomCode) return;
+      gameState.autoAdvance = isVal;
+      await update(ref(db, `rooms/${currentRoomCode}`), {
+        autoAdvance: isVal
+      });
+    }
+
     async function teacherStartGame(modeNum) {
       if (!currentRoomCode) return;
       gameState.status = 'PLAYING';
       gameState.mode = modeNum;
       gameState.currentIndex = 0;
+      localRenderedIndex = -1;
 
       await update(ref(db, `rooms/${currentRoomCode}`), {
         status: 'PLAYING',
@@ -947,15 +988,19 @@
 
     async function teacherNextQuestion() {
       if (!currentRoomCode) return;
-      gameState.currentIndex++;
-      if (gameState.currentIndex >= VOCAB_DATA.length) {
-        // Move to Exit Ticket / Finished
+      if (autoNextTimeout) {
+        clearTimeout(autoNextTimeout);
+        autoNextTimeout = null;
+      }
+
+      const nextIdx = gameState.currentIndex + 1;
+      if (nextIdx >= VOCAB_DATA.length) {
         await update(ref(db, `rooms/${currentRoomCode}`), {
           status: 'EXIT_TICKET'
         });
       } else {
         await update(ref(db, `rooms/${currentRoomCode}`), {
-          currentIndex: gameState.currentIndex
+          currentIndex: nextIdx
         });
       }
     }
@@ -1004,6 +1049,8 @@
         name: nameInput,
         avatar: selectedAvatar,
         score: 0,
+        correctCount: 0,
+        lastAnsweredIndex: -1,
         joinedAt: Date.now()
       });
 
@@ -1026,8 +1073,7 @@
         } else if (gameState.status === 'EXIT_TICKET') {
           showScreen('screen-exit-ticket');
         } else if (gameState.status === 'FINISHED') {
-          if (currentRole === 'host') loadAssessmentRecap();
-          else showScreen('screen-exit-ticket');
+          showScreen('screen-exit-ticket');
         }
       });
 
@@ -1041,45 +1087,69 @@
       showScreen('screen-gameplay');
       
       const target = VOCAB_DATA[gameState.currentIndex];
+      if (!target) return;
+
+      // Host control bar visibility
+      const hostStatusBar = document.getElementById('host-live-status-bar');
+      if (currentRole === 'host') {
+        hostStatusBar.classList.remove('hidden');
+      } else {
+        hostStatusBar.classList.add('hidden');
+      }
+
+      // Reset question state if index changed
+      if (localRenderedIndex !== gameState.currentIndex) {
+        localRenderedIndex = gameState.currentIndex;
+        hasAnsweredCurrentQ = false;
+        m2CurrentSpelling = [];
+        
+        // Speak command for students
+        if (currentRole === 'student') {
+          speakText(target.tpr);
+        }
+      }
+
       document.getElementById('gameplay-q-num').innerText = gameState.currentIndex + 1;
       document.getElementById('gameplay-mode-tag').innerText = `Mode ${gameState.mode}: ${gameState.mode === 1 ? 'Listen & Touch' : 'Label the Body'}`;
       document.getElementById('gameplay-prompt-title').innerText = `"${target.tpr}"`;
-
-      // Speak command
-      speakText(target.tpr);
-
-      if (currentRole === 'host') {
-        document.getElementById('host-next-q-btn').classList.remove('hidden');
-      } else {
-        document.getElementById('host-next-q-btn').classList.add('hidden');
-      }
 
       if (gameState.mode === 1) {
         document.getElementById('mode1-board').classList.remove('hidden');
         document.getElementById('mode2-board').classList.add('hidden');
         document.getElementById('svg-character-container-m1').innerHTML = createSVGCharacterMarkup('m1');
+        
+        // Reset feedback box
+        const fb = document.getElementById('m1-feedback-box');
+        fb.className = "min-h-[90px] bg-white p-3 rounded-2xl border-2 border-dashed border-sandborder flex flex-col items-center justify-center text-center";
+        fb.innerHTML = `<span class="text-xl mb-1">👆</span><p class="text-xs font-semibold text-stone-500">Ketuk gambar bagian tubuh!</p>`;
+
         highlightTargetHotspot(target.id, 'm1');
+
       } else {
         document.getElementById('mode1-board').classList.add('hidden');
         document.getElementById('mode2-board').classList.remove('hidden');
         document.getElementById('svg-character-container-m2').innerHTML = createSVGCharacterMarkup('m2');
+        
         m2TargetIndex = gameState.currentIndex;
+        document.getElementById('m2-target-pin-label').innerText = `Pin Target #${target.pin}`;
         loadMode2Target();
       }
     }
 
     function replayCurrentVoicePrompt() {
       const target = VOCAB_DATA[gameState.currentIndex];
-      speakText(target.tpr);
+      if (target) speakText(target.tpr);
       playSoundEffect('click');
     }
 
     /* ==========================================================================
-       7. SVG CHARACTER GENERATOR & TOUCH HANDLERS
+       7. SVG CHARACTER GENERATOR & TOUCH HANDLERS (WITH HOST GUARD)
        ========================================================================== */
     function createSVGCharacterMarkup(modeSuffix) {
+      const isHostClass = currentRole === 'host' ? 'host-view' : '';
+
       return `
-        <svg viewBox="0 0 400 450" class="w-full h-auto drop-shadow-md overflow-visible" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 400 450" class="w-full h-auto drop-shadow-md overflow-visible ${isHostClass}" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#FCE5D8" />
@@ -1155,31 +1225,45 @@
       `;
     }
 
+    /* SAFE GUARDED TOUCH HANDLER */
     async function handleBodyPartTouch(partId) {
+      if (currentRole === 'host') return; // Ignore host clicks
+      if (gameState.status !== 'PLAYING') return;
       if (gameState.mode !== 1) return;
+      
       const target = VOCAB_DATA[gameState.currentIndex];
-      const fb = document.getElementById('m1-feedback-box');
+      if (!target) return;
 
-      if (partId === target.id) {
+      if (hasAnsweredCurrentQ) return; // Prevent double answering
+      hasAnsweredCurrentQ = true;
+
+      const fb = document.getElementById('m1-feedback-box');
+      const isCorrect = (partId === target.id);
+
+      if (isCorrect) {
         playSoundEffect('correct');
         speakText(`${target.english}!`);
 
         fb.className = "min-h-[90px] bg-sage-light p-3 rounded-2xl border-2 border-sage flex flex-col items-center justify-center text-center";
         fb.innerHTML = `<span class="text-2xl mb-0.5">🎉 Correct!</span><p class="text-xs font-bold text-sage">Jawabanmu tepat: ${target.english} (${target.indo})</p>`;
-
-        // Update score in Firebase
-        if (currentRole === 'student' && myStudentId && currentRoomCode) {
-          const scoreRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}/score`);
-          const snap = await get(scoreRef);
-          const currentScore = snap.val() || 0;
-          await set(scoreRef, currentScore + 10);
-        }
-
       } else {
         playSoundEffect('wrong');
         const wrongPart = VOCAB_DATA.find(v => v.id === partId);
         fb.className = "min-h-[90px] bg-coral-light p-3 rounded-2xl border-2 border-coral flex flex-col items-center justify-center text-center";
-        fb.innerHTML = `<span class="text-xl mb-0.5">❌ Try Again!</span><p class="text-xs font-bold text-coral">Itu adalah ${wrongPart ? wrongPart.english : partId}. Coba lagi!</p>`;
+        fb.innerHTML = `<span class="text-xl mb-0.5">❌ Try Again!</span><p class="text-xs font-bold text-coral">Itu adalah ${wrongPart ? wrongPart.english : partId}. Menunggu soal berikutnya...</p>`;
+      }
+
+      // Update student answer in Firebase
+      if (currentRole === 'student' && myStudentId && currentRoomCode) {
+        const pRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`);
+        const snap = await get(pRef);
+        const pData = snap.val() || {};
+        
+        await update(pRef, {
+          score: (pData.score || 0) + (isCorrect ? 10 : 0),
+          correctCount: (pData.correctCount || 0) + (isCorrect ? 1 : 0),
+          lastAnsweredIndex: gameState.currentIndex
+        });
       }
     }
 
@@ -1195,6 +1279,7 @@
     function loadMode2Target() {
       m2CurrentSpelling = [];
       const target = VOCAB_DATA[m2TargetIndex];
+      if (!target) return;
 
       highlightTargetHotspot(target.id, 'm2');
       renderM2Slots(target.english.length);
@@ -1236,7 +1321,12 @@
     }
 
     function m2TileClick(char) {
+      if (currentRole === 'host') return;
+      if (hasAnsweredCurrentQ) return;
+
       const target = VOCAB_DATA[m2TargetIndex];
+      if (!target) return;
+
       if (m2CurrentSpelling.length < target.english.length) {
         playSoundEffect('click');
         m2CurrentSpelling.push(char);
@@ -1249,6 +1339,7 @@
     }
 
     function m2Backspace() {
+      if (currentRole === 'host' || hasAnsweredCurrentQ) return;
       if (m2CurrentSpelling.length > 0) {
         playSoundEffect('click');
         m2CurrentSpelling.pop();
@@ -1257,6 +1348,7 @@
     }
 
     function m2Clear() {
+      if (currentRole === 'host' || hasAnsweredCurrentQ) return;
       playSoundEffect('click');
       m2CurrentSpelling = [];
       renderM2Slots(VOCAB_DATA[m2TargetIndex].english.length);
@@ -1265,20 +1357,28 @@
     async function validateM2Spelling() {
       const target = VOCAB_DATA[m2TargetIndex];
       const word = m2CurrentSpelling.join('').toLowerCase();
+      const isCorrect = (word === target.english);
+      hasAnsweredCurrentQ = true;
 
-      if (word === target.english) {
+      if (isCorrect) {
         playSoundEffect('correct');
         speakText(target.english);
-        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-sage font-bold">✨ Tepat! "${target.english.toUpperCase()}" terpasang di pin #${target.pin}!</span>`;
-
-        if (currentRole === 'student' && myStudentId && currentRoomCode) {
-          const scoreRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}/score`);
-          const snap = await get(scoreRef);
-          await set(scoreRef, (snap.val() || 0) + 10);
-        }
+        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-sage font-bold">✨ Tepat! "${target.english.toUpperCase()}" terpasang!</span>`;
       } else {
         playSoundEffect('wrong');
-        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-coral font-bold">❌ Ejaan belum tepat. Tekan Clear dan coba lagi!</span>`;
+        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-coral font-bold">❌ Jawaban belum tepat. Menunggu soal berikutnya...</span>`;
+      }
+
+      if (currentRole === 'student' && myStudentId && currentRoomCode) {
+        const pRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`);
+        const snap = await get(pRef);
+        const pData = snap.val() || {};
+
+        await update(pRef, {
+          score: (pData.score || 0) + (isCorrect ? 10 : 0),
+          correctCount: (pData.correctCount || 0) + (isCorrect ? 1 : 0),
+          lastAnsweredIndex: gameState.currentIndex
+        });
       }
     }
 
@@ -1317,8 +1417,8 @@
       }
 
       tableBody.innerHTML = list.map((p, idx) => {
-        const score = p.score || 0;
-        const labelsCorrect = Math.min(7, Math.floor(score / 10));
+        const correctCount = p.correctCount || 0;
+        const labelsCorrect = Math.min(7, correctCount);
         let readiness = "Belum Siap";
         if (labelsCorrect >= 6) readiness = "Sangat Siap";
         else if (labelsCorrect >= 4) readiness = "Siap";
@@ -1350,7 +1450,7 @@
       
       let csvContent = "data:text/csv;charset=utf-8,No,Nama Murid,18.1 Tepat,18.2 Label Score,Kesiapan Belajar,Show and Tell,Exit Ticket\n";
       Object.values(players).forEach((p, idx) => {
-        const labelsCorrect = Math.min(7, Math.floor((p.score || 0) / 10));
+        const labelsCorrect = Math.min(7, p.correctCount || 0);
         let readiness = labelsCorrect >= 6 ? "Sangat Siap" : (labelsCorrect >= 4 ? "Siap" : "Belum Siap");
         csvContent += `${idx + 1},"${p.name}",Tepat,${labelsCorrect}/7,${readiness},${p.showAndTell ? 'Selesai' : 'Perlu Bantuan'},${p.exitTicket || '-'}\n`;
       });
@@ -1395,6 +1495,7 @@
     window.teacherStartGame = teacherStartGame;
     window.teacherNextQuestion = teacherNextQuestion;
     window.teacherFinishSession = teacherFinishSession;
+    window.toggleAutoAdvance = toggleAutoAdvance;
     window.replayCurrentVoicePrompt = replayCurrentVoicePrompt;
     window.toggleWordBankHint = toggleWordBankHint;
     window.m2Backspace = m2Backspace;
