@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Body - Classroom Game (Real-Time Multiplayer)</title>
+  <title>My Body - Real-Time Multiplayer English Game (Grade 3)</title>
   
-  <!-- Google Fonts -->
+  <!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=JetBrains+Mono:wght@700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,8 +19,10 @@
           colors: {
             paper: '#FAF6F0',
             sand: '#F2ECE1',
-            ink: '#2A2520',
-            terracotta: {
+            sandborder: '#E5DDD0',
+            sandshadow: '#D6CCB8',
+            ink: '#1E242B',
+            coral: {
               DEFAULT: '#E05A47',
               hover: '#D44A36',
               shadow: '#B93D2C',
@@ -33,14 +35,14 @@
               light: '#EFF7F2'
             },
             mustard: {
-              DEFAULT: '#E9A825',
-              hover: '#D6961F',
+              DEFAULT: '#E8A838',
+              hover: '#D69627',
               shadow: '#B87B17',
               light: '#FDF7EB'
             }
           },
           fontFamily: {
-            heading: ['Fredoka', 'sans-serif'],
+            heading: ['Space Grotesk', 'sans-serif'],
             sans: ['Plus Jakarta Sans', 'sans-serif'],
             mono: ['JetBrains Mono', 'monospace']
           }
@@ -55,7 +57,7 @@
   <style>
     body {
       background-color: #FAF6F0;
-      color: #2A2520;
+      color: #1E242B;
       font-family: 'Plus Jakarta Sans', sans-serif;
       user-select: none;
       -webkit-user-select: none;
@@ -63,96 +65,87 @@
     }
 
     .paper-pattern {
-      background-image: radial-gradient(#E2D8C8 1px, transparent 1px);
-      background-size: 18px 18px;
+      background-image: radial-gradient(#E5DDD0 0.85px, transparent 0.85px);
+      background-size: 16px 16px;
     }
 
-    /* Tactile Craft Design Elements */
+    /* Tactile UI Component Styling */
     .tactile-card {
       background: #FFFFFF;
-      border: 2.5px solid #2A2520;
-      box-shadow: 0 5px 0 #2A2520;
+      border: 2px solid #E5DDD0;
+      box-shadow: 0 6px 0 #D6CCB8;
       border-radius: 20px;
+      transition: all 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .tactile-btn {
       position: relative;
-      border: 2.5px solid #2A2520;
+      border-width: 2px;
+      border-style: solid;
       border-radius: 14px;
-      font-family: 'Fredoka', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-weight: 700;
+      letter-spacing: 0.01em;
       transition: all 0.1s ease;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
     }
 
-    .tactile-btn:active {
+    .tactile-btn:active, .tactile-btn.pressed {
       transform: translateY(4px) !important;
       box-shadow: 0 0 0 transparent !important;
     }
 
-    .btn-terracotta {
+    .btn-coral {
       background-color: #E05A47;
+      border-color: #B93D2C;
       color: #FFFFFF;
-      box-shadow: 0 4px 0 #2A2520;
+      box-shadow: 0 4px 0 #B93D2C;
     }
-    .btn-terracotta:hover { background-color: #D44A36; }
+    .btn-coral:hover { background-color: #D44A36; }
 
     .btn-sage {
       background-color: #2E8B57;
+      border-color: #1C5B37;
       color: #FFFFFF;
-      box-shadow: 0 4px 0 #2A2520;
+      box-shadow: 0 4px 0 #1C5B37;
     }
     .btn-sage:hover { background-color: #257448; }
 
     .btn-mustard {
-      background-color: #E9A825;
-      color: #2A2520;
-      box-shadow: 0 4px 0 #2A2520;
+      background-color: #E8A838;
+      border-color: #B87B17;
+      color: #1E242B;
+      box-shadow: 0 4px 0 #B87B17;
     }
-    .btn-mustard:hover { background-color: #D6961F; }
+    .btn-mustard:hover { background-color: #D69627; }
 
-    .btn-paper {
+    .btn-sand {
       background-color: #FFFFFF;
-      color: #2A2520;
-      box-shadow: 0 4px 0 #2A2520;
+      border-color: #E5DDD0;
+      color: #1E242B;
+      box-shadow: 0 4px 0 #D6CCB8;
     }
-    .btn-paper:hover { background-color: #F8F4ED; }
+    .btn-sand:hover { background-color: #F8F4ED; }
 
-    /* SVG Character Interactive Targets */
-    .body-target-hotspot {
-      cursor: pointer;
-      transition: all 0.2s ease;
-      fill-opacity: 0.15;
-      stroke-width: 3px;
-      stroke-dasharray: 4 4;
+    /* Keyframe Animations */
+    @keyframes breathing {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50% { transform: translateY(-3px) scale(1.005); }
     }
 
-    .body-target-hotspot:hover {
-      fill-opacity: 0.4;
-      stroke-dasharray: none;
-      filter: drop-shadow(0 2px 8px rgba(224, 90, 71, 0.4));
-    }
-
-    .body-target-hotspot.active-pulse {
-      fill-opacity: 0.45;
-      stroke-dasharray: none;
-      animation: pulseTarget 1.5s infinite alternate;
-    }
-
-    @keyframes pulseTarget {
-      0% { fill-opacity: 0.2; stroke-width: 3px; }
-      100% { fill-opacity: 0.55; stroke-width: 5px; }
+    @keyframes blink {
+      0%, 94%, 98%, 100% { transform: scaleY(1); }
+      96% { transform: scaleY(0.1); }
     }
 
     @keyframes springBounce {
       0% { transform: scale(1); }
-      30% { transform: scale(1.1) rotate(-1.5deg); }
-      50% { transform: scale(0.96) rotate(1.5deg); }
-      75% { transform: scale(1.03); }
+      30% { transform: scale(1.12) rotate(-2deg); }
+      50% { transform: scale(0.96) rotate(2deg); }
+      75% { transform: scale(1.04); }
       100% { transform: scale(1); }
     }
 
@@ -162,589 +155,519 @@
       40%, 80% { transform: translateX(6px); }
     }
 
-    .anim-bounce { animation: springBounce 0.5s ease-in-out; }
-    .anim-shake { animation: shakeError 0.4s ease-in-out; }
+    .character-idle {
+      animation: breathing 4s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
 
-    /* Letter Tile Styling */
-    .spelling-tile {
-      width: 46px;
-      height: 52px;
-      font-family: 'Fredoka', sans-serif;
+    .eye-blink {
+      animation: blink 4.5s infinite;
+      transform-origin: center;
+    }
+
+    .bounce-target {
+      animation: springBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .shake-target {
+      animation: shakeError 0.4s ease-in-out;
+    }
+
+    /* SVG Interactive Target Styling */
+    .body-part-hotspot {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      fill-opacity: 0.12;
+      stroke-width: 3px;
+      stroke-dasharray: 4 4;
+    }
+
+    .body-part-hotspot:hover, .body-part-hotspot.active-target {
+      fill-opacity: 0.45;
+      stroke-dasharray: none;
+      stroke-width: 4px;
+      animation: pulseHighlight 1.5s infinite alternate;
+    }
+
+    @keyframes pulseHighlight {
+      0% { fill-opacity: 0.25; stroke-width: 3px; }
+      100% { fill-opacity: 0.55; stroke-width: 5px; }
+    }
+
+    .pin-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    /* Letter Tile Box styling */
+    .letter-tile {
+      width: 44px;
+      height: 50px;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 24px;
       font-weight: 700;
       border-radius: 12px;
       background: #FFFFFF;
-      border: 2px solid #2A2520;
-      box-shadow: 0 4px 0 #2A2520;
+      border: 2px solid #E5DDD0;
+      box-shadow: 0 4px 0 #D6CCB8;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-    }
-    .spelling-tile:active {
-      transform: translateY(3px);
-      box-shadow: 0 1px 0 #2A2520;
+      transition: all 0.1s ease;
     }
 
-    .spelling-slot {
-      width: 44px;
-      height: 50px;
-      border: 2px dashed #B0A696;
+    .letter-tile:hover {
+      background: #FFF9F0;
+      border-color: #E8A838;
+      transform: translateY(-2px);
+    }
+
+    .letter-slot {
+      width: 42px;
+      height: 48px;
+      border: 2px dashed #C8BEAF;
       border-radius: 12px;
       background: #FAF6F0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: 'Fredoka', sans-serif;
+      font-family: 'Space Grotesk', sans-serif;
       font-size: 24px;
       font-weight: 700;
-      color: #2A2520;
+      color: #1E242B;
     }
-    .spelling-slot.filled {
+
+    .letter-slot.filled {
       border-style: solid;
       border-color: #2E8B57;
       background: #FFFFFF;
-      box-shadow: 0 3px 0 #2A2520;
+      box-shadow: 0 3px 0 #1C5B37;
       color: #2E8B57;
     }
 
-    /* Toast Notification */
-    #toast-notification {
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
-    }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #FAF6F0; }
+    ::-webkit-scrollbar-thumb { background: #D6CCB8; border-radius: 4px; }
   </style>
 </head>
 <body class="paper-pattern min-h-screen flex flex-col justify-between overflow-x-hidden">
 
-  <!-- TOP HEADER / BRAND BAR -->
-  <header class="w-full bg-white border-b-2 border-ink px-4 py-3 sticky top-0 z-30 shadow-sm">
+  <!-- TOP APP HEADER -->
+  <header class="w-full bg-white border-b-2 border-sandborder px-4 py-3 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
       
-      <!-- Brand & RPP Tag -->
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="goHome()">
-        <div class="bg-terracotta text-white font-heading text-lg font-700 px-3 py-1 rounded-xl border-2 border-ink shadow-[0_3px_0_#2A2520]">
+      <!-- Brand & Lesson Badge -->
+      <div class="flex items-center space-x-3">
+        <div class="bg-coral text-white font-heading text-lg font-700 px-3 py-1 rounded-xl border-2 border-coral-shadow shadow-[0_3px_0_#B93D2C]">
           CHAPTER 4
         </div>
         <div>
-          <h1 class="font-heading text-xl sm:text-2xl font-700 leading-none text-ink">My Body — Interactive Classroom</h1>
-          <p class="text-xs text-stone-500 font-semibold mt-0.5">Bahasa Inggris SD Kelas 3 (RPP Pertemuan 15)</p>
+          <h1 class="font-heading text-xl sm:text-2xl font-700 leading-none text-ink">My Body</h1>
+          <p class="text-xs text-stone-500 font-semibold mt-0.5">Bahasa Inggris SD Kelas III — Parts of Body</p>
         </div>
       </div>
 
-      <!-- Live Room Indicator / Controls -->
-      <div class="flex items-center space-x-2">
-        <div id="active-room-pill" class="hidden items-center bg-mustard-light px-3 py-1 rounded-xl border-2 border-ink font-mono font-700 text-xs sm:text-sm">
-          ROOM: <span id="active-room-code-display" class="text-terracotta ml-1">-----</span>
-        </div>
-        <button onclick="toggleSound()" class="tactile-btn btn-paper p-2 text-sm rounded-xl" title="Toggle Sound">
+      <!-- Live Room Indicator / Status -->
+      <div id="header-room-info" class="hidden flex items-center gap-2">
+        <span class="text-xs font-bold text-stone-500 uppercase tracking-wider hidden sm:inline">Room:</span>
+        <span id="header-room-code" class="bg-sand text-coral font-mono text-base sm:text-lg font-700 px-3 py-1 rounded-xl border-2 border-sandborder shadow-inner">
+          -----
+        </span>
+        <button id="sound-toggle-btn" onclick="toggleAudio()" class="tactile-btn btn-sand px-2.5 py-1 text-sm" title="Toggle Sound FX">
           <span id="sound-icon">🔊</span>
         </button>
-        <button onclick="toggleFullscreen()" class="tactile-btn btn-paper p-2 text-sm rounded-xl" title="Fullscreen">
-          ⛶
-        </button>
       </div>
+
+      <!-- Exit / Reset Button -->
+      <button id="exit-room-btn" onclick="leaveCurrentRoom()" class="tactile-btn btn-sand px-3 py-1.5 text-xs sm:text-sm hidden">
+        <span>🚪 Exit</span>
+      </button>
 
     </div>
   </header>
 
-  <!-- MAIN APP CONTAINER -->
-  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 py-6 flex-grow flex flex-col justify-center">
-    
-    <!-- 1. ROLE SELECTION HUB (HOME) -->
-    <section id="view-role-hub" class="w-full max-w-4xl mx-auto flex flex-col items-center gap-6">
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto w-full px-3 sm:px-6 py-4 flex-grow flex flex-col justify-center">
+
+    <!-- 0. ROLE SELECTION SCREEN (LANDING) -->
+    <section id="screen-role-select" class="w-full max-w-xl mx-auto flex flex-col gap-6 text-center py-6">
       
-      <div class="text-center space-y-2">
-        <span class="bg-sage-light text-sage border border-sage/30 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider">
-          Real-Time Classroom Game
-        </span>
-        <h2 class="font-heading text-3xl sm:text-5xl font-700 text-ink">Pilih Peran Anda</h2>
-        <p class="text-stone-600 text-sm sm:text-base max-w-md mx-auto">
-          Guru membuat room di Layar Proyektor/IFP, Siswa bergabung melalui HP/Tablet dengan QR Code atau Kode Room.
+      <div class="tactile-card p-6 sm:p-8 bg-white flex flex-col items-center gap-4">
+        <div class="w-16 h-16 rounded-2xl bg-coral/10 text-coral flex items-center justify-center text-3xl font-heading font-bold border-2 border-coral/30">
+          🧍‍♂️
+        </div>
+        
+        <div>
+          <h2 class="font-heading text-2xl sm:text-3xl font-700 text-ink">My Body Classroom Game</h2>
+          <p class="text-xs sm:text-sm text-stone-600 font-medium mt-1">
+            Real-time English Learning & Assessment — RPP Pertemuan 15
+          </p>
+        </div>
+
+        <!-- Role Choice Buttons -->
+        <div class="w-full flex flex-col sm:flex-row gap-3 mt-4">
+          <button onclick="setupTeacherHost()" class="tactile-btn btn-coral flex-1 py-4 text-base gap-2">
+            <span>👨‍🏫</span>
+            <span>Guru / Host (Admin)</span>
+          </button>
+          <button onclick="showStudentJoinForm()" class="tactile-btn btn-sage flex-1 py-4 text-base gap-2">
+            <span>🙋‍♂️</span>
+            <span>Siswa / Peserta</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick RPP Reference Box -->
+      <div class="bg-sand p-4 rounded-2xl border border-sandborder text-left">
+        <h3 class="font-heading text-sm font-700 text-ink mb-1">📖 Coverage (7 Vocab Items):</h3>
+        <p class="text-xs text-stone-600 leading-relaxed font-mono">
+          head • eyes • ears • nose • mouth • hands • legs
         </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full mt-2">
+    </section>
+
+    <!-- 1. STUDENT JOIN SCREEN -->
+    <section id="screen-student-join" class="w-full max-w-md mx-auto flex flex-col gap-4 hidden">
+      <div class="tactile-card p-6 bg-white flex flex-col gap-4">
         
-        <!-- Teacher Card -->
-        <div class="tactile-card p-6 sm:p-8 flex flex-col justify-between items-center text-center bg-white hover:border-terracotta transition-colors">
-          <div class="space-y-3">
-            <div class="w-16 h-16 rounded-2xl bg-terracotta-light border-2 border-ink flex items-center justify-center text-3xl mx-auto shadow-[0_4px_0_#2A2520]">
-              👩‍🏫
-            </div>
-            <h3 class="font-heading text-2xl font-700 text-ink">Saya Guru (Host Room)</h3>
-            <p class="text-xs sm:text-sm text-stone-500 leading-relaxed">
-              Buat room pembelajaran baru, tampilkan QR Code di proyektor kelas, kontrol jalannya soal, dan dapatkan Rekap Nilai RPP.
-            </p>
-          </div>
-          <button onclick="showAdminCreateRoom()" class="tactile-btn btn-terracotta w-full py-3.5 mt-6 text-base">
-            Buat Room Baru ➔
-          </button>
+        <div class="text-center">
+          <span class="text-xs font-bold uppercase tracking-wider text-sage">Join Session</span>
+          <h2 class="font-heading text-2xl font-700 text-ink">Enter Room & Name</h2>
         </div>
 
-        <!-- Student Card -->
-        <div class="tactile-card p-6 sm:p-8 flex flex-col justify-between items-center text-center bg-white hover:border-sage transition-colors">
-          <div class="space-y-3">
-            <div class="w-16 h-16 rounded-2xl bg-sage-light border-2 border-ink flex items-center justify-center text-3xl mx-auto shadow-[0_4px_0_#2A2520]">
-              🎒
-            </div>
-            <h3 class="font-heading text-2xl font-700 text-ink">Saya Siswa (Peserta)</h3>
-            <p class="text-xs sm:text-sm text-stone-500 leading-relaxed">
-              Gabung ke room kelas yang dibuat Guru dengan memasukkan 5 digit Kode Room atau via link QR Code.
-            </p>
-          </div>
-          <button onclick="showStudentJoinScreen()" class="tactile-btn btn-sage w-full py-3.5 mt-6 text-base">
-            Gabung Room ➔
-          </button>
+        <!-- Room Code Input -->
+        <div>
+          <label class="block text-xs font-bold text-stone-600 mb-1">Kode Room (5 Chars):</label>
+          <input type="text" id="join-room-input" placeholder="BODY1" maxlength="5" uppercase 
+                 class="w-full px-4 py-3 font-mono text-center text-2xl font-700 rounded-xl border-2 border-sandborder focus:border-coral outline-none uppercase tracking-widest bg-sand/30">
         </div>
 
-      </div>
+        <!-- Student Name Input -->
+        <div>
+          <label class="block text-xs font-bold text-stone-600 mb-1">Nama Siswa:</label>
+          <input type="text" id="join-name-input" placeholder="Ketik nama kamu..." maxlength="20" 
+                 class="w-full px-4 py-3 font-semibold text-lg rounded-xl border-2 border-sandborder focus:border-sage outline-none bg-white">
+        </div>
 
-      <!-- Offline Solo Play Option -->
-      <div class="pt-4">
-        <button onclick="startSoloOfflineMode()" class="tactile-btn btn-mustard px-5 py-2.5 text-xs sm:text-sm">
-          ⚡ Mode Latihan Mandiri (Tanpa Multiplayer)
+        <!-- Avatar Selector -->
+        <div>
+          <label class="block text-xs font-bold text-stone-600 mb-1.5">Pilih Avatar:</label>
+          <div id="avatar-selector-grid" class="grid grid-cols-6 gap-2">
+            <!-- Dynamically populated avatar badges -->
+          </div>
+        </div>
+
+        <!-- Join Button -->
+        <button onclick="submitStudentJoin()" class="tactile-btn btn-sage w-full py-3.5 text-base mt-2">
+          Masuk ke Kelas 🚀
         </button>
-      </div>
 
-    </section>
-
-    <!-- 2. ADMIN: CREATE ROOM FORM -->
-    <section id="view-admin-create" class="w-full max-w-xl mx-auto hidden">
-      <div class="tactile-card p-6 sm:p-8 space-y-6">
-        <div class="flex items-center justify-between pb-4 border-b-2 border-sand">
-          <div>
-            <h2 class="font-heading text-2xl font-700 text-ink">Pengaturan Room Baru</h2>
-            <p class="text-xs text-stone-500 font-semibold">Bahasa Inggris SD Kelas III (My Body)</p>
-          </div>
-          <button onclick="goHome()" class="tactile-btn btn-paper text-xs px-3 py-1.5">Batal</button>
+        <div id="join-error-msg" class="hidden text-xs font-bold text-coral text-center bg-coral-light p-2.5 rounded-xl border border-coral/30">
+          Room tidak ditemukan. Pastikan Pak/Bu Guru sudah membuat room!
         </div>
 
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nama Kelas / Pertemuan</label>
-            <input id="cfg-class-name" type="text" value="Kelas 3 SD - Chapter 4 (My Body)" class="w-full p-3 border-2 border-ink rounded-xl font-semibold text-sm focus:outline-none focus:border-terracotta">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Mode Permainan</label>
-            <select id="cfg-game-mode" class="w-full p-3 border-2 border-ink rounded-xl font-semibold text-sm bg-white focus:outline-none focus:border-terracotta">
-              <option value="1">Mode 1: Listen & Touch (Menunjuk Bagian Tubuh)</option>
-              <option value="2">Mode 2: Label the Body (Mengeja / Menulis Label)</option>
-              <option value="mix" selected>Mode 3: Campuran (Listen & Touch + Labeling)</option>
-            </select>
-          </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Bantuan Word Bank</label>
-              <select id="cfg-wordbank" class="w-full p-3 border-2 border-ink rounded-xl font-semibold text-sm bg-white focus:outline-none">
-                <option value="yes" selected>Aktif (Dianjurkan RPP)</option>
-                <option value="no">Nonaktif (Tantangan)</option>
-              </select>
-            </div>
-            <div>
-              <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Waktu per Soal</label>
-              <select id="cfg-timer" class="w-full p-3 border-2 border-ink rounded-xl font-semibold text-sm bg-white focus:outline-none">
-                <option value="15">15 Detik (Cepat)</option>
-                <option value="20" selected>20 Detik (Ideal)</option>
-                <option value="30">30 Detik (Santai)</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <button onclick="createRoomAsAdmin()" class="tactile-btn btn-terracotta w-full py-3.5 text-base mt-4">
-          🚀 Buat Room & Tampilkan QR Code
+        <button onclick="showRoleSelection()" class="text-xs text-stone-400 font-bold hover:underline text-center">
+          ← Kembali ke Pilihan Peran
         </button>
+
       </div>
     </section>
 
-    <!-- 3. ADMIN: CLASSROOM LOBBY DASHBOARD (PROJECTOR / IFP VIEW) -->
-    <section id="view-admin-lobby" class="w-full max-w-5xl mx-auto space-y-6 hidden">
+    <!-- 2. TEACHER LOBBY & CONTROL DASHBOARD -->
+    <section id="screen-teacher-dashboard" class="w-full max-w-5xl mx-auto flex flex-col gap-6 hidden">
       
-      <!-- Top Banner -->
+      <!-- Room Header Banner & QR Code -->
       <div class="tactile-card p-6 bg-white flex flex-col md:flex-row items-center justify-between gap-6">
         
-        <!-- Left Details -->
-        <div class="space-y-2 text-center md:text-left">
-          <span class="bg-sage-light text-sage border border-sage/30 px-3 py-1 rounded-full font-bold text-xs uppercase tracking-wider">
-            Lobby Permainan Aktif
+        <div class="flex flex-col gap-2 text-center md:text-left">
+          <span class="bg-mustard-light text-mustard-shadow text-xs font-bold px-3 py-1 rounded-full border border-mustard/40 w-max mx-auto md:mx-0">
+            ROOM READY
           </span>
-          <h2 id="lobby-class-title" class="font-heading text-2xl sm:text-3xl font-700 text-ink">Kelas 3 SD - Chapter 4</h2>
-          <p class="text-xs sm:text-sm text-stone-500">Scan QR Code atau buka link di bawah ini pada perangkat siswa.</p>
-          
-          <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-2">
-            <button onclick="copyShareLink()" class="tactile-btn btn-paper text-xs px-3 py-2">
-              📋 Salin Link Undangan
-            </button>
-            <button onclick="simulateStudentTab()" class="tactile-btn btn-mustard text-xs px-3 py-2">
-              🧪 Buka Tab Siswa (Simulasi)
-            </button>
-          </div>
-        </div>
-
-        <!-- Room Code & QR Card -->
-        <div class="flex items-center gap-4 bg-sand p-4 rounded-2xl border-2 border-ink">
-          <div id="qrcode-container" class="bg-white p-2 rounded-xl border border-ink shadow-sm"></div>
-          <div class="text-center pr-2">
-            <span class="text-xs text-stone-500 font-bold block uppercase">KODE ROOM</span>
-            <span id="lobby-room-code" class="font-mono text-3xl sm:text-4xl font-700 text-terracotta tracking-wider">XXXXX</span>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Joined Participants Roster -->
-      <div class="tactile-card p-6 space-y-4">
-        <div class="flex items-center justify-between border-b-2 border-sand pb-3">
-          <div class="flex items-center gap-2">
-            <h3 class="font-heading text-xl font-700 text-ink">Daftar Siswa Bergabung</h3>
-            <span id="lobby-count-badge" class="bg-terracotta text-white font-mono font-700 text-xs px-2.5 py-0.5 rounded-full border border-ink">
-              0 Siswa
-            </span>
-          </div>
-          <p class="text-xs text-stone-400 font-semibold">Otomatis update real-time</p>
-        </div>
-
-        <div id="lobby-roster-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 min-h-[140px] items-center justify-center p-2">
-          <!-- Joined student cards populated dynamically -->
-          <div class="col-span-full text-center text-stone-400 font-semibold text-sm py-8">
-            Menunggu siswa bergabung melalui Kode Room / QR Code...
-          </div>
-        </div>
-      </div>
-
-      <!-- Start Game Controller Bar -->
-      <div class="flex items-center justify-between">
-        <button onclick="goHome()" class="tactile-btn btn-paper px-4 py-2.5 text-sm">✕ Batalkan Room</button>
-        <button id="btn-start-game" onclick="startGameFromAdmin()" class="tactile-btn btn-sage px-8 py-3.5 text-base sm:text-lg">
-          ▶ MULAI GAME SEKARANG
-        </button>
-      </div>
-
-    </section>
-
-    <!-- 4. ADMIN: LIVE GAMEPLAY PROJECTOR VIEW -->
-    <section id="view-admin-gameplay" class="w-full max-w-5xl mx-auto space-y-4 hidden">
-      
-      <!-- Controller Top Header -->
-      <div class="tactile-card p-4 bg-white flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3">
-          <span id="admin-q-num-badge" class="bg-terracotta text-white font-heading font-700 text-lg px-3 py-1 rounded-xl border border-ink">
-            SOAL 1/7
-          </span>
-          <div>
-            <h3 id="admin-q-tpr" class="font-heading text-lg sm:text-xl font-700 text-ink">"Touch your nose!"</h3>
-            <p id="admin-q-sub" class="text-xs text-stone-500 font-semibold">Target: nose (hidung)</p>
-          </div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <!-- Timer Ring/Box -->
-          <div class="bg-mustard-light border-2 border-ink px-4 py-1.5 rounded-xl text-center">
-            <span class="text-[10px] text-stone-500 font-bold block uppercase">WAKTU</span>
-            <span id="admin-timer-num" class="font-mono text-2xl font-700 text-ink">20</span>
-          </div>
-
-          <button onclick="triggerAudioForCurrentQ()" class="tactile-btn btn-paper p-2.5 text-sm" title="Putar Suara">
-            🔊
-          </button>
-        </div>
-      </div>
-
-      <!-- Main Projector Stage -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        
-        <!-- Center Character & Prompt Display -->
-        <div class="tactile-card p-4 md:col-span-2 flex flex-col items-center justify-center bg-white relative min-h-[360px]">
-          <div id="admin-character-container" class="w-full max-w-[340px]">
-            <!-- Dynamic SVG Character -->
-          </div>
-          
-          <div class="mt-2 text-center">
-            <span id="admin-answer-status" class="text-xs font-bold text-stone-500 bg-sand px-3 py-1 rounded-full border border-ink">
-              Menunggu jawaban siswa: <b id="admin-answered-count" class="text-terracotta">0</b> / <span id="admin-total-students">0</span> Siswa
-            </span>
-          </div>
-        </div>
-
-        <!-- Right Side Live Answer Leaderboard -->
-        <div class="tactile-card p-4 flex flex-col justify-between bg-sand">
-          <div>
-            <h4 class="font-heading text-base font-700 text-ink border-b-2 border-ink/20 pb-2 mb-3">
-              🏆 Klasemen Sementara
-            </h4>
-            <div id="admin-live-leaderboard" class="space-y-2 max-h-[280px] overflow-y-auto pr-1">
-              <!-- Live scores updated here -->
-            </div>
-          </div>
-
-          <div class="pt-4 border-t-2 border-ink/20 space-y-2">
-            <button onclick="forceNextQuestionAdmin()" class="tactile-btn btn-terracotta w-full py-2.5 text-sm">
-              Lanjut Soal Berikutnya ➔
-            </button>
-            <button onclick="endGameEarlyAdmin()" class="tactile-btn btn-paper w-full py-2 text-xs">
-              Akhiri Permainan Lebih Cepat
-            </button>
-          </div>
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- 5. ADMIN: FINAL PODIUM & RPP RECAP VIEW -->
-    <section id="view-admin-recap" class="w-full max-w-5xl mx-auto space-y-6 hidden">
-      
-      <!-- Victory Header -->
-      <div class="tactile-card p-6 bg-white text-center space-y-3">
-        <span class="text-5xl">🏆</span>
-        <h2 class="font-heading text-3xl sm:text-4xl font-700 text-ink">Permainan Selesai!</h2>
-        <p class="text-stone-600 text-sm max-w-md mx-auto">
-          Hasil evaluasi pembelajaran Bahasa Inggris *Chapter 4: My Body* berdasarkan Rubrik Penilaian RPP Pertemuan 15.
-        </p>
-      </div>
-
-      <!-- Top 3 Podium Cards -->
-      <div id="podium-container" class="grid grid-cols-1 sm:grid-cols-3 gap-4 items-end">
-        <!-- Top 3 dynamically generated -->
-      </div>
-
-      <!-- RPP Assessment & Observasi Table -->
-      <div class="tactile-card p-6 bg-white space-y-4">
-        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b-2 border-sand pb-3">
-          <div>
-            <h3 class="font-heading text-xl font-700 text-ink">Rekap Penilaian & Observasi RPP (18.1 & 18.2)</h3>
-            <p class="text-xs text-stone-500">Skor Label Tepat (0–7) & Kategori Kesiapan Belajar Siswa</p>
-          </div>
-          <button onclick="exportRecapCSV()" class="tactile-btn btn-sage text-xs px-4 py-2">
-            📥 Unduh Excel / CSV
-          </button>
-        </div>
-
-        <div class="overflow-x-auto border-2 border-ink rounded-xl">
-          <table class="w-full text-left text-xs sm:text-sm">
-            <thead class="bg-sand font-heading text-ink border-b-2 border-ink">
-              <tr>
-                <th class="p-3">No</th>
-                <th class="p-3">Nama Siswa / Kelompok</th>
-                <th class="p-3 text-center">Skor Label (0-7)</th>
-                <th class="p-3 text-center">Akurasi (%)</th>
-                <th class="p-3">Kategori Kesiapan</th>
-                <th class="p-3">Refleksi (Exit Ticket)</th>
-              </tr>
-            </thead>
-            <tbody id="recap-table-body" class="divide-y divide-sand">
-              <!-- Populated via JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="flex justify-center">
-        <button onclick="goHome()" class="tactile-btn btn-terracotta px-8 py-3 text-base">
-          Kembali ke Menu Utama ↺
-        </button>
-      </div>
-
-    </section>
-
-    <!-- 6. STUDENT: JOIN ROOM FORM -->
-    <section id="view-student-join" class="w-full max-w-md mx-auto hidden">
-      <div class="tactile-card p-6 sm:p-8 space-y-5 bg-white">
-        
-        <div class="text-center space-y-1">
-          <div class="w-12 h-12 rounded-2xl bg-sage-light border-2 border-ink flex items-center justify-center text-2xl mx-auto shadow-[0_3px_0_#2A2520]">
-            🎒
-          </div>
-          <h2 class="font-heading text-2xl font-700 text-ink">Gabung ke Kelas</h2>
-          <p class="text-xs text-stone-500">Masukkan Kode Room dan Nama Anda</p>
-        </div>
-
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Kode Room (5 Digit)</label>
-            <input id="input-student-room" type="text" placeholder="Contoh: BDY42" maxlength="5" class="w-full p-3 border-2 border-ink rounded-xl font-mono text-center text-2xl font-700 uppercase tracking-widest focus:outline-none focus:border-sage">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-1">Nama Siswa / Kelompok</label>
-            <input id="input-student-name" type="text" placeholder="Contoh: Budi atau Kelompok 1" class="w-full p-3 border-2 border-ink rounded-xl font-semibold text-sm focus:outline-none focus:border-sage">
-          </div>
-
-          <div>
-            <label class="block text-xs font-bold text-stone-700 uppercase mb-2 text-center">Pilih Avatar Badge</label>
-            <div id="badge-selector-grid" class="flex flex-wrap justify-center gap-2">
-              <!-- Avatar options dynamically populated -->
-            </div>
-          </div>
-        </div>
-
-        <button onclick="submitStudentJoin()" class="tactile-btn btn-sage w-full py-3.5 text-base mt-2">
-          Masuk ke Kelas ➔
-        </button>
-
-        <div class="text-center pt-2">
-          <button onclick="goHome()" class="text-xs text-stone-400 font-bold hover:underline">← Kembali</button>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- 7. STUDENT: WAITING ROOM -->
-    <section id="view-student-waiting" class="w-full max-w-md mx-auto text-center hidden">
-      <div class="tactile-card p-8 space-y-6 bg-white">
-        
-        <div id="student-waiting-avatar" class="w-20 h-20 rounded-full bg-sand border-2 border-ink text-4xl flex items-center justify-center mx-auto shadow-[0_4px_0_#2A2520] animate-bounce">
-          🦊
-        </div>
-
-        <div class="space-y-1">
-          <h2 id="student-waiting-name" class="font-heading text-2xl font-700 text-ink">Budi</h2>
-          <p class="text-xs font-bold text-sage bg-sage-light px-3 py-1 rounded-full border border-sage/30 inline-block">
-            Berhasil Bergabung di Room <span id="student-waiting-roomcode">XXXXX</span>
+          <h2 class="font-heading text-3xl sm:text-4xl font-700 text-ink">
+            Kode Room: <span id="teacher-display-code" class="font-mono text-coral tracking-wider">-----</span>
+          </h2>
+          <p class="text-xs sm:text-sm text-stone-500 font-semibold">
+            Siswa dapat memindai QR Code atau membuka link di bawah dari HP masing-masing.
           </p>
+
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-2">
+            <button onclick="copyStudentJoinLink()" class="tactile-btn btn-sand px-3 py-2 text-xs gap-1.5">
+              <span>📋</span> Salin Link Join
+            </button>
+            <button onclick="openStudentSimTab()" class="tactile-btn btn-sand px-3 py-2 text-xs gap-1.5">
+              <span>🖥️</span> Simulasi Tab Siswa
+            </button>
+          </div>
         </div>
 
-        <div class="bg-sand p-4 rounded-2xl border-2 border-ink space-y-2">
-          <span class="text-2xl block">⏳</span>
-          <p class="text-xs sm:text-sm font-semibold text-stone-600">
-            Menunggu Guru memulai permainan di proyektor kelas...
+        <!-- QR Code Container -->
+        <div class="flex flex-col items-center gap-2 p-3 bg-sand rounded-2xl border-2 border-sandborder shadow-inner">
+          <div id="qrcode-container" class="bg-white p-2 rounded-xl shadow-sm"></div>
+          <span class="text-[11px] font-mono font-bold text-stone-500">Scan to Join</span>
+        </div>
+
+      </div>
+
+      <!-- Live Roster & Master Game Controls -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Connected Roster -->
+        <div class="tactile-card p-5 bg-white md:col-span-2 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between pb-3 border-b border-sandborder mb-3">
+              <h3 class="font-heading text-lg font-700 text-ink">
+                Connected Students (<span id="roster-count-num" class="text-sage">0</span>)
+              </h3>
+              <span class="text-xs font-bold text-stone-400 font-mono animate-pulse">● Live Sync</span>
+            </div>
+
+            <div id="teacher-roster-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-60 overflow-y-auto pr-1">
+              <p class="text-xs text-stone-400 italic col-span-full text-center py-6">
+                Belum ada siswa yang bergabung. Bagikan kode room atau QR code di atas!
+              </p>
+            </div>
+          </div>
+
+          <!-- Master Controls -->
+          <div class="pt-4 border-t border-sandborder mt-4 flex flex-wrap gap-2">
+            <button onclick="teacherStartGame(1)" class="tactile-btn btn-coral flex-1 py-3 text-sm">
+              ▶ Start Mode 1 (Listen & Touch)
+            </button>
+            <button onclick="teacherStartGame(2)" class="tactile-btn btn-sage flex-1 py-3 text-sm">
+              ▶ Start Mode 2 (Labeling)
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Session Leaderboard -->
+        <div class="tactile-card p-5 bg-white flex flex-col justify-between">
+          <div>
+            <h3 class="font-heading text-lg font-700 text-ink pb-3 border-b border-sandborder mb-3">
+              🏆 Live Leaderboard
+            </h3>
+            <div id="teacher-live-leaderboard" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+              <p class="text-xs text-stone-400 italic text-center py-4">Progres skor siswa akan muncul di sini.</p>
+            </div>
+          </div>
+
+          <button onclick="teacherFinishSession()" class="tactile-btn btn-sand w-full py-2.5 text-xs mt-4 text-coral">
+            ⏹ Finish Session & View Assessment Recap
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- 3. STUDENT WAITING / LOBBY SCREEN -->
+    <section id="screen-student-waiting" class="w-full max-w-md mx-auto flex flex-col gap-4 text-center hidden">
+      <div class="tactile-card p-6 sm:p-8 bg-white flex flex-col items-center gap-4">
+        
+        <div id="student-my-avatar" class="text-5xl animate-bounce">🦊</div>
+        
+        <div>
+          <h2 id="student-my-name" class="font-heading text-2xl font-700 text-ink">Nama Siswa</h2>
+          <p class="text-xs font-mono font-bold text-sage mt-0.5">Status: Ready in Class</p>
+        </div>
+
+        <div class="w-full bg-sand-light border-2 border-dashed border-sandborder p-4 rounded-2xl">
+          <span class="text-xs font-bold text-stone-500 uppercase block mb-1">Waiting for Teacher</span>
+          <p class="text-sm font-semibold text-stone-700">
+            Game akan dimulai oleh Pak/Bu Guru. Perhatikan layar proyektor!
           </p>
         </div>
 
       </div>
     </section>
 
-    <!-- 8. STUDENT: ACTIVE GAMEPLAY SCREEN -->
-    <section id="view-student-gameplay" class="w-full max-w-3xl mx-auto space-y-4 hidden">
+    <!-- 4. GAME PLAYING CONTAINER (MODE 1 & MODE 2) -->
+    <section id="screen-gameplay" class="w-full flex flex-col items-center gap-4 hidden">
       
-      <!-- Student Header -->
-      <div class="tactile-card p-3 bg-white flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span id="st-badge-display" class="w-8 h-8 rounded-full bg-sand border border-ink flex items-center justify-center text-lg">🦊</span>
-          <span id="st-name-display" class="font-heading text-sm font-700 text-ink">Siswa</span>
-        </div>
-
-        <div class="flex items-center gap-2">
-          <span id="st-q-badge" class="bg-terracotta text-white font-mono font-700 text-xs px-2.5 py-1 rounded-lg border border-ink">
-            Q 1/7
+      <!-- Top Status Banner -->
+      <div class="tactile-card w-full max-w-3xl p-4 text-center bg-white flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-left">
+          <span id="gameplay-mode-tag" class="text-xs font-bold uppercase tracking-wider text-coral">
+            Mode 1: Listen & Touch
           </span>
-          <span class="bg-mustard-light font-mono text-xs font-700 px-2.5 py-1 rounded-lg border border-ink">
-            Score: <b id="st-score-display" class="text-terracotta">0</b>
-          </span>
-        </div>
-      </div>
-
-      <!-- QUESTION DISPLAY CARD -->
-      <div class="tactile-card p-4 sm:p-6 bg-white space-y-4 text-center relative overflow-hidden">
-        
-        <!-- Timer Bar -->
-        <div class="w-full bg-sand h-3 rounded-full border border-ink overflow-hidden">
-          <div id="st-timer-bar" class="bg-terracotta h-full w-full transition-all duration-1000"></div>
-        </div>
-
-        <div class="space-y-1">
-          <span id="st-mode-tag" class="text-[10px] font-bold text-sage uppercase tracking-wider bg-sage-light px-2.5 py-0.5 rounded-full border border-sage/30">
-            Listen & Touch Mode
-          </span>
-          <h2 id="st-prompt-title" class="font-heading text-xl sm:text-3xl font-700 text-ink">
+          <h2 id="gameplay-prompt-title" class="font-heading text-xl sm:text-2xl font-700 text-ink">
             "Touch your nose!"
           </h2>
         </div>
 
-        <!-- MODE 1 INTERACTIVE AREA: SVG CHARACTER TAP -->
-        <div id="st-area-mode1" class="flex flex-col items-center justify-center py-2">
-          <div id="st-character-svg-container" class="w-full max-w-[320px]">
-            <!-- Interactive SVG -->
-          </div>
-          <p class="text-xs text-stone-500 font-semibold mt-2">Ketuk langsung bagian tubuh anak pada gambar di atas!</p>
-        </div>
-
-        <!-- MODE 2 INTERACTIVE AREA: SPELLING TILES -->
-        <div id="st-area-mode2" class="space-y-4 hidden py-2">
+        <div class="flex items-center gap-2">
+          <button id="voice-replay-btn" onclick="replayCurrentVoicePrompt()" class="tactile-btn btn-mustard p-2.5 rounded-full" title="Replay Voice">
+            🔊
+          </button>
           
-          <!-- Word Bank Chips (If enabled) -->
-          <div id="st-wordbank-container" class="bg-mustard-light p-2.5 rounded-xl border border-mustard/40 hidden">
-            <span class="text-[10px] font-bold text-stone-600 block mb-1 uppercase">Pilihan Word Bank:</span>
-            <div id="st-wordbank-chips" class="flex flex-wrap justify-center gap-1.5"></div>
-          </div>
+          <span class="bg-sand text-stone-700 text-xs font-mono font-bold px-3 py-2 rounded-xl border border-sandborder">
+            Question <span id="gameplay-q-num" class="text-coral">1</span>/7
+          </span>
+        </div>
+      </div>
 
-          <!-- Empty Slots -->
-          <div id="st-spelling-slots" class="flex flex-wrap justify-center gap-1.5 py-2"></div>
-
-          <!-- Letter Deck -->
-          <div id="st-spelling-deck" class="flex flex-wrap justify-center gap-2"></div>
-
-          <div class="flex justify-center gap-2 pt-1">
-            <button onclick="stBackspace()" class="tactile-btn btn-paper px-4 py-1.5 text-xs">⌫ Hapus</button>
-            <button onclick="stClear()" class="tactile-btn btn-paper px-4 py-1.5 text-xs">↺ Riset</button>
-            <button onclick="stSubmitSpelling()" class="tactile-btn btn-sage px-6 py-1.5 text-xs">✓ Jawab</button>
-          </div>
+      <!-- MODE 1 INTERACTIVE SVG CHARACTER BOARD -->
+      <div id="mode1-board" class="tactile-card w-full max-w-4xl p-4 flex flex-col md:flex-row items-center justify-center gap-6 bg-white hidden">
+        
+        <div class="relative w-full max-w-[360px] sm:max-w-[400px] flex justify-center py-2">
+          <div id="svg-character-container-m1" class="character-idle w-full"></div>
         </div>
 
-        <!-- ANSWERED OVERLAY FEEDBACK -->
-        <div id="st-answer-overlay" class="absolute inset-0 bg-white/95 backdrop-blur-sm z-20 flex flex-col items-center justify-center p-6 text-center hidden">
-          <div id="st-feedback-icon" class="text-5xl mb-2">🎉</div>
-          <h3 id="st-feedback-title" class="font-heading text-2xl font-700 text-ink">Jawaban Benar!</h3>
-          <p id="st-feedback-sub" class="text-sm font-semibold text-stone-600 mt-1">Kamu mendapatkan +120 Poin</p>
-          <span class="mt-4 text-xs font-bold text-stone-400 bg-sand px-3 py-1 rounded-full border border-ink">
-            Menunggu soal berikutnya...
-          </span>
+        <div class="w-full md:w-80 flex flex-col gap-3">
+          <div class="bg-sand p-4 rounded-2xl border border-sandborder">
+            <h3 class="font-heading text-base font-700 text-ink mb-1">Instruksi:</h3>
+            <p class="text-xs text-stone-600 leading-relaxed">
+              Dengarkan ucapan guru / suara di HP, lalu ketuk bagian tubuh anak yang sesuai pada gambar!
+            </p>
+          </div>
+
+          <div id="m1-feedback-box" class="min-h-[90px] bg-white p-3 rounded-2xl border-2 border-dashed border-sandborder flex flex-col items-center justify-center text-center">
+            <span class="text-xl mb-1">👆</span>
+            <p class="text-xs font-semibold text-stone-500">Ketuk gambar bagian tubuh!</p>
+          </div>
+
+          <!-- Teacher Control Button (Only visible on Host view) -->
+          <button id="host-next-q-btn" onclick="teacherNextQuestion()" class="tactile-btn btn-coral w-full py-3 text-sm hidden">
+            Soal Berikutnya (Host) ➔
+          </button>
+        </div>
+
+      </div>
+
+      <!-- MODE 2 SPELLING BOARD -->
+      <div id="mode2-board" class="tactile-card w-full max-w-4xl p-4 flex flex-col md:flex-row items-center justify-center gap-6 bg-white hidden">
+        
+        <div class="relative w-full max-w-[340px] flex justify-center py-2">
+          <div id="svg-character-container-m2" class="character-idle w-full"></div>
+        </div>
+
+        <div class="w-full md:w-96 flex flex-col gap-3">
+          
+          <!-- Scaffolding Toggle Button -->
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-stone-500">Pin Target #${m2TargetIndex+1}</span>
+            <button id="wordbank-toggle-btn" onclick="toggleWordBankHint()" class="tactile-btn btn-mustard text-xs px-2.5 py-1">
+              💡 Word Bank Hint
+            </button>
+          </div>
+
+          <!-- Word Bank Drawer -->
+          <div id="wordbank-hint-box" class="bg-mustard-light border border-mustard/40 p-2.5 rounded-xl hidden text-center">
+            <span class="text-[11px] font-bold text-mustard-shadow block mb-1">Word Bank Options:</span>
+            <div class="flex flex-wrap justify-center gap-1.5 text-xs font-mono font-bold">
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">head</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">eyes</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">ears</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">nose</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">mouth</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">hands</span>
+              <span class="bg-white px-2 py-0.5 rounded border border-mustard/30">legs</span>
+            </div>
+          </div>
+
+          <!-- Slots Container -->
+          <div id="m2-letter-slots-container" class="flex flex-wrap justify-center gap-1 py-1"></div>
+
+          <!-- Tiles Deck -->
+          <div class="bg-sand p-2.5 rounded-xl border border-sandborder flex flex-col items-center gap-1.5">
+            <span class="text-[11px] font-bold text-stone-500">Pilih Huruf:</span>
+            <div id="m2-tiles-deck" class="flex flex-wrap justify-center gap-1.5"></div>
+          </div>
+
+          <!-- Control buttons -->
+          <div class="flex items-center gap-2">
+            <button onclick="m2Backspace()" class="tactile-btn btn-sand flex-1 py-2 text-xs">⌫ Backspace</button>
+            <button onclick="m2Clear()" class="tactile-btn btn-sand flex-1 py-2 text-xs">↺ Clear</button>
+          </div>
+
+          <div id="m2-feedback-status" class="text-center font-bold text-xs text-stone-600 min-h-[30px] flex items-center justify-center">
+            Susun huruf bahasa Inggris sesuai nomor target!
+          </div>
+
         </div>
 
       </div>
 
     </section>
 
-    <!-- 9. STUDENT: RESULT & RPP EXIT TICKET -->
-    <section id="view-student-result" class="w-full max-w-md mx-auto space-y-4 hidden">
-      <div class="tactile-card p-6 text-center space-y-5 bg-white">
-        
-        <div class="space-y-1">
-          <span class="text-4xl">🌟</span>
-          <h2 class="font-heading text-2xl font-700 text-ink">Permainan Selesai!</h2>
-          <p class="text-xs text-stone-500 font-semibold">Hasil Belajar Bahasa Inggris</p>
+    <!-- 5. SHOW & TELL + EXIT TICKET REFLECTION (STUDENT FINAL STEP) -->
+    <section id="screen-exit-ticket" class="w-full max-w-lg mx-auto flex flex-col gap-4 hidden">
+      
+      <!-- Show & Tell Card -->
+      <div class="tactile-card p-5 bg-white text-center flex flex-col items-center gap-3">
+        <span class="text-3xl">🗣️</span>
+        <h2 class="font-heading text-xl font-700 text-ink">Show & Tell Pair Practice</h2>
+        <p class="text-xs text-stone-600 leading-relaxed">
+          Tunjukkan layar HP ini ke teman di sebelahmu, tunjuk hidung atau bagian tubuhmu, lalu katakan:
+        </p>
+        <div class="bg-sage-light border-2 border-sage/40 p-3 rounded-xl text-sage font-heading font-700 text-lg">
+          "This is my nose!"
         </div>
+      </div>
 
-        <div class="bg-sand p-4 rounded-2xl border-2 border-ink grid grid-cols-2 gap-2">
-          <div>
-            <span class="text-[10px] font-bold text-stone-500 block uppercase">TOTAL SKOR</span>
-            <span id="st-res-score" class="font-mono text-2xl font-700 text-terracotta">0</span>
-          </div>
-          <div>
-            <span class="text-[10px] font-bold text-stone-500 block uppercase">LABEL BENAR</span>
-            <span id="st-res-accuracy" class="font-mono text-2xl font-700 text-sage">0 / 7</span>
-          </div>
-        </div>
+      <!-- Exit Ticket Reflection Form (RPP Pertemuan 15) -->
+      <div class="tactile-card p-5 bg-white text-center flex flex-col gap-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-coral">Exit Ticket — I Can Do It!</span>
+        <h3 class="font-heading text-lg font-700 text-ink">Bagaimana perasaanmu belajar kosakata hari ini?</h3>
 
-        <!-- RPP EXIT TICKET FORM -->
-        <div class="bg-mustard-light p-4 rounded-2xl border-2 border-ink space-y-3 text-left">
-          <div class="border-b border-ink/20 pb-2">
-            <h4 class="font-heading text-sm font-700 text-ink">EXIT TICKET — MY BODY</h4>
-            <p class="text-[11px] text-stone-600">Refleksi Kemampuan Diri (RPP Pertemuan 15)</p>
-          </div>
-
-          <label class="block text-xs font-bold text-stone-700">Saya bisa menulis nama bagian tubuh dalam bahasa Inggris:</label>
-          
-          <div class="space-y-2">
-            <label class="flex items-center gap-2 p-2 bg-white rounded-xl border border-ink cursor-pointer text-xs font-semibold">
-              <input type="radio" name="exit-ticket" value="😊 Bisa sendiri" checked class="accent-sage">
-              <span>😊 Bisa sendiri</span>
-            </label>
-            <label class="flex items-center gap-2 p-2 bg-white rounded-xl border border-ink cursor-pointer text-xs font-semibold">
-              <input type="radio" name="exit-ticket" value="😐 Perlu bantuan" class="accent-mustard">
-              <span>😐 Perlu bantuan</span>
-            </label>
-            <label class="flex items-center gap-2 p-2 bg-white rounded-xl border border-ink cursor-pointer text-xs font-semibold">
-              <input type="radio" name="exit-ticket" value="🙁 Perlu latihan lagi" class="accent-terracotta">
-              <span>🙁 Perlu latihan lagi</span>
-            </label>
-          </div>
-
-          <button onclick="submitExitTicket()" class="tactile-btn btn-terracotta w-full py-2.5 text-xs mt-2">
-            Kirim Refleksi Diri ➔
+        <div class="grid grid-cols-3 gap-2 mt-1">
+          <button onclick="submitExitTicket('😊')" class="tactile-btn btn-sand py-3 flex flex-col items-center gap-1">
+            <span class="text-2xl">😊</span>
+            <span class="text-[11px] font-bold text-sage">Bisa Sendiri</span>
           </button>
+          <button onclick="submitExitTicket('😐')" class="tactile-btn btn-sand py-3 flex flex-col items-center gap-1">
+            <span class="text-2xl">😐</span>
+            <span class="text-[11px] font-bold text-mustard-shadow">Perlu Bantuan</span>
+          </button>
+          <button onclick="submitExitTicket('🙁')" class="tactile-btn btn-sand py-3 flex flex-col items-center gap-1">
+            <span class="text-2xl">🙁</span>
+            <span class="text-[11px] font-bold text-coral">Perlu Latihan</span>
+          </button>
+        </div>
+
+        <div id="exit-ticket-submitted-msg" class="hidden text-xs font-bold text-sage bg-sage-light p-2.5 rounded-xl border border-sage/30 mt-2">
+          ✅ Refleksi tersimpan! Jawabanmu sudah terkirim ke Pak/Bu Guru.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 6. FINAL RPP Pertemuan 15 ASSESSMENT RECAP TABLE (TEACHER VIEW) -->
+    <section id="screen-assessment-recap" class="w-full max-w-6xl mx-auto flex flex-col gap-4 hidden">
+      <div class="tactile-card p-6 bg-white flex flex-col gap-4">
+        
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pb-4 border-b border-sandborder">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-sage">Laporan Hasil Belajar</span>
+            <h2 class="font-heading text-2xl font-700 text-ink">Rekap Asesmen RPP Pertemuan 15</h2>
+            <p class="text-xs text-stone-500 font-semibold">Bahasa Inggris SD Kelas III — Parts of the Body</p>
+          </div>
+
+          <button onclick="exportAssessmentCSV()" class="tactile-btn btn-sage px-4 py-2.5 text-sm gap-2">
+            <span>📥</span> Export CSV / Excel
+          </button>
+        </div>
+
+        <!-- Assessment Data Table -->
+        <div class="border-2 border-sandborder rounded-2xl overflow-hidden overflow-x-auto">
+          <table class="w-full text-left text-xs sm:text-sm">
+            <thead class="bg-sand font-heading text-stone-700 border-b border-sandborder">
+              <tr>
+                <th class="p-3">No</th>
+                <th class="p-3">Nama Murid</th>
+                <th class="p-3 text-center">Tepatan (18.1)</th>
+                <th class="p-3 text-center">Label Tulisan (18.2)</th>
+                <th class="p-3 text-center">Kesiapan Belajar</th>
+                <th class="p-3 text-center">Show & Tell</th>
+                <th class="p-3 text-center">Exit Ticket</th>
+              </tr>
+            </thead>
+            <tbody id="recap-table-body" class="divide-y divide-sandborder font-medium">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
         </div>
 
       </div>
@@ -752,18 +675,34 @@
 
   </main>
 
-  <!-- TOAST NOTIFICATION CONTAINER -->
-  <div id="toast-notification" class="fixed bottom-5 right-5 z-50 bg-ink text-white font-semibold text-xs px-4 py-3 rounded-xl border-2 border-white shadow-xl transform translate-y-20 opacity-0 pointer-events-none flex items-center gap-2">
-    <span id="toast-icon">ℹ️</span>
-    <span id="toast-msg">Notification</span>
-  </div>
+  <!-- FOOTER -->
+  <footer class="w-full bg-white border-t border-sandborder py-2.5 px-4 text-center text-xs text-stone-500 font-semibold">
+    RPP Pertemuan 15 • Real-time Firebase Synchronization • Class III Elementary English
+  </footer>
 
-  <!-- APPLICATION LOGIC & REAL-TIME MULTIPLAYER SYSTEM -->
-  <script>
+  <!-- FIREBASE REALTIME DATABASE & APPLICATION ENGINE -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+
     /* ==========================================================================
-       1. VOCABULARY DATA (RPP GRADE 3)
+       1. FIREBASE INITIALIZATION & DATA STRUCTURES
        ========================================================================== */
-    const VOCAB = [
+    const firebaseConfig = {
+      apiKey: "AIzaSyC5fYhBPPbZgey3P9GmYPOEPhuh1fjg3VM",
+      authDomain: "my-body-c7d1c.firebaseapp.com",
+      databaseURL: "https://my-body-c7d1c-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "my-body-c7d1c",
+      storageBucket: "my-body-c7d1c.firebasestorage.app",
+      messagingSenderId: "132190007791",
+      appId: "1:132190007791:web:49dc1520034dc0ec97461a",
+      measurementId: "G-9D4LQ00GF0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const VOCAB_DATA = [
       { id: 'head',  pin: 1, english: 'head',  indo: 'kepala',  tpr: 'Touch your head.',  x: 200, y: 55,  r: 45 },
       { id: 'eyes',  pin: 2, english: 'eyes',  indo: 'mata',    tpr: 'Point to your eyes.', x: 185, y: 88,  r: 28 },
       { id: 'ears',  pin: 3, english: 'ears',  indo: 'telinga', tpr: 'Point to your ears.',x: 238, y: 92,  r: 20 },
@@ -773,71 +712,55 @@
       { id: 'legs',  pin: 7, english: 'legs',  indo: 'kaki',    tpr: 'Point to your legs.',x: 224, y: 340, r: 42 }
     ];
 
-    const AVATARS = ['🦊', '🐶', '🐼', '🦁', '🐸', '🚀', '🌟', '🎨'];
+    const AVATARS = ['🦊', '🐶', '🐱', '🦁', '🐯', '🐼'];
 
-    /* ==========================================================================
-       2. GLOBAL STATE
-       ========================================================================== */
-    let currentRole = null; // 'admin' | 'student' | 'solo'
-    let roomCode = null;
-    let roomState = {
-      className: '',
-      mode: 'mix',
-      wordbank: 'yes',
-      timerSec: 20,
-      status: 'lobby', // 'lobby' | 'playing' | 'recap'
-      currentQIndex: 0,
-      timeRemaining: 20,
-      participants: {} // { pid: { name, avatar, score, correctCount, exitTicket, answers: {} } }
+    let currentRole = null; // 'host' or 'student'
+    let currentRoomCode = null;
+    let myStudentId = null;
+    let selectedAvatar = '🦊';
+    let audioEnabled = true;
+
+    // Local state variables for sync
+    let gameState = {
+      status: 'LOBBY', // 'LOBBY', 'PLAYING', 'EXIT_TICKET', 'FINISHED'
+      mode: 1,
+      currentIndex: 0
     };
 
-    let studentProfile = {
-      id: 'st_' + Math.random().toString(36).substr(2, 6),
-      name: '',
-      avatar: '🦊',
-      score: 0,
-      correctCount: 0,
-      hasAnsweredCurrentQ: false
-    };
-
-    let gameTimerInterval = null;
-    let broadcastChannel = null;
-    let soundEnabled = true;
-
-    // Student Spelling state
-    let currentSpellingLetters = [];
+    let m2TargetIndex = 0;
+    let m2CurrentSpelling = [];
+    let showWordBankHint = false;
 
     /* ==========================================================================
-       3. SYNTHESIZED WEB AUDIO & SPEECH ENGINE
+       2. AUDIO FX & SYNTHESIZED SOUNDS
        ========================================================================== */
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     let audioCtx = null;
 
-    function playSound(type) {
-      if (!soundEnabled) return;
+    function playSoundEffect(type) {
+      if (!audioEnabled) return;
       if (!audioCtx) audioCtx = new AudioContext();
       if (audioCtx.state === 'suspended') audioCtx.resume();
 
       const now = audioCtx.currentTime;
-
       if (type === 'correct') {
-        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+        [523.25, 659.25, 783.99].forEach((freq, i) => {
           const osc = audioCtx.createOscillator();
           const gain = audioCtx.createGain();
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.07);
-          gain.gain.setValueAtTime(0.25, now + idx * 0.07);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.3);
+          osc.frequency.setValueAtTime(freq, now + i * 0.08);
+          gain.gain.setValueAtTime(0.25, now + i * 0.08);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
           osc.connect(gain);
           gain.connect(audioCtx.destination);
-          osc.start(now + idx * 0.07);
-          osc.stop(now + idx * 0.07 + 0.35);
+          osc.start(now + i * 0.08);
+          osc.stop(now + i * 0.08 + 0.35);
         });
       } else if (type === 'wrong') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(180, now);
+        osc.frequency.setValueAtTime(160, now);
         osc.frequency.exponentialRampToValueAtTime(60, now + 0.18);
         gain.gain.setValueAtTime(0.3, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
@@ -845,13 +768,13 @@
         gain.connect(audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.22);
-      } else if (type === 'pop') {
+      } else if (type === 'click') {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
         osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(200, now + 0.04);
-        gain.gain.setValueAtTime(0.15, now);
+        osc.frequency.exponentialRampToValueAtTime(180, now + 0.04);
+        gain.gain.setValueAtTime(0.12, now);
         gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -860,801 +783,370 @@
       }
     }
 
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      document.getElementById('sound-icon').innerText = audioEnabled ? '🔊' : '🔇';
+      playSoundEffect('click');
+    }
+
     function speakText(text) {
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
         const u = new SpeechSynthesisUtterance(text);
         u.lang = 'en-US';
-        u.rate = 0.88;
+        u.rate = 0.9;
         window.speechSynthesis.speak(u);
       }
     }
 
-    function toggleSound() {
-      soundEnabled = !soundEnabled;
-      document.getElementById('sound-icon').innerText = soundEnabled ? '🔊' : '🔇';
-    }
-
     /* ==========================================================================
-       4. REAL-TIME MULTIPLAYER SYNC ENGINE (BroadcastChannel + LocalStorage)
+       3. NAVIGATION & ROLE FLOWS
        ========================================================================== */
-    function initRealtimeSync(code) {
-      roomCode = code;
-      const channelName = `my_body_room_${code}`;
-      
-      if (broadcastChannel) broadcastChannel.close();
-      broadcastChannel = new BroadcastChannel(channelName);
-
-      broadcastChannel.onmessage = (event) => {
-        handleIncomingSyncMsg(event.data);
-      };
-
-      window.addEventListener('storage', (e) => {
-        if (e.key === channelName && e.newValue) {
-          try {
-            handleIncomingSyncMsg(JSON.parse(e.newValue));
-          } catch(err){}
-        }
-      });
-
-      document.getElementById('active-room-pill').classList.remove('hidden');
-      document.getElementById('active-room-pill').classList.add('flex');
-      document.getElementById('active-room-code-display').innerText = roomCode;
-    }
-
-    function broadcastRoomUpdate(type, payload = {}) {
-      if (!roomCode || !broadcastChannel) return;
-      const msg = { type, payload, roomState, timeStamp: Date.now() };
-      
-      try {
-        broadcastChannel.postMessage(msg);
-      } catch(e){}
-
-      localStorage.setItem(`my_body_room_${roomCode}`, JSON.stringify(msg));
-    }
-
-    function handleIncomingSyncMsg(msg) {
-      if (!msg) return;
-      
-      if (msg.roomState && currentRole === 'student') {
-        roomState = msg.roomState;
-        renderStudentState();
-      }
-
-      if (currentRole === 'admin') {
-        if (msg.type === 'STUDENT_JOIN') {
-          const p = msg.payload;
-          if (!roomState.participants[p.id]) {
-            roomState.participants[p.id] = {
-              name: p.name,
-              avatar: p.avatar,
-              score: 0,
-              correctCount: 0,
-              exitTicket: '-',
-              answers: {}
-            };
-            playSound('pop');
-            showToast(`${p.name} bergabung!`, '🎒');
-            renderAdminLobbyRoster();
-            broadcastRoomUpdate('ADMIN_STATE_SYNC');
-          }
-        } else if (msg.type === 'STUDENT_ANSWER') {
-          const { pid, qIndex, isCorrect, scoreAdd } = msg.payload;
-          if (roomState.participants[pid]) {
-            if (!roomState.participants[pid].answers[qIndex]) {
-              roomState.participants[pid].answers[qIndex] = isCorrect;
-              if (isCorrect) {
-                roomState.participants[pid].score += scoreAdd;
-                roomState.participants[pid].correctCount += 1;
-              }
-              renderAdminGameplayView();
-              broadcastRoomUpdate('ADMIN_STATE_SYNC');
-            }
-          }
-        } else if (msg.type === 'STUDENT_EXIT_TICKET') {
-          const { pid, reflection } = msg.payload;
-          if (roomState.participants[pid]) {
-            roomState.participants[pid].exitTicket = reflection;
-            renderRecapTable();
-          }
-        }
-      }
-    }
-
-    /* ==========================================================================
-       5. VIEW ROUTING & NAVIGATION
-       ========================================================================== */
-    function showView(viewId) {
-      const views = [
-        'view-role-hub', 'view-admin-create', 'view-admin-lobby', 
-        'view-admin-gameplay', 'view-admin-recap', 'view-student-join', 
-        'view-student-waiting', 'view-student-gameplay', 'view-student-result'
+    function showScreen(screenId) {
+      const screens = [
+        'screen-role-select',
+        'screen-student-join',
+        'screen-teacher-dashboard',
+        'screen-student-waiting',
+        'screen-gameplay',
+        'screen-exit-ticket',
+        'screen-assessment-recap'
       ];
-      views.forEach(v => {
-        const el = document.getElementById(v);
+      screens.forEach(s => {
+        const el = document.getElementById(s);
         if (el) el.classList.add('hidden');
       });
-      document.getElementById(viewId).classList.remove('hidden');
+      document.getElementById(screenId).classList.remove('hidden');
     }
 
-    function goHome() {
-      if (gameTimerInterval) clearInterval(gameTimerInterval);
-      currentRole = null;
-      document.getElementById('active-room-pill').classList.add('hidden');
-      showView('view-role-hub');
+    function showRoleSelection() {
+      showScreen('screen-role-select');
+    }
+
+    function renderAvatarGrid() {
+      const grid = document.getElementById('avatar-selector-grid');
+      grid.innerHTML = '';
+      AVATARS.forEach(av => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = `p-2 text-2xl rounded-xl border-2 transition-transform ${selectedAvatar === av ? 'border-sage bg-sage-light scale-110' : 'border-sandborder bg-white'}`;
+        btn.innerText = av;
+        btn.onclick = () => {
+          selectedAvatar = av;
+          renderAvatarGrid();
+          playSoundEffect('click');
+        };
+        grid.appendChild(btn);
+      });
+    }
+
+    function showStudentJoinForm() {
+      renderAvatarGrid();
+      
+      // Auto-fill room code from URL ?room=XXXXX parameter if present
+      const urlParams = new URLSearchParams(window.location.search);
+      const roomParam = urlParams.get('room');
+      if (roomParam) {
+        document.getElementById('join-room-input').value = roomParam.toUpperCase();
+      }
+
+      showScreen('screen-student-join');
     }
 
     /* ==========================================================================
-       6. ADMIN FLOW
+       4. TEACHER HOST SETUP & REALTIME SYNC
        ========================================================================== */
-    function showAdminCreateRoom() {
-      currentRole = 'admin';
-      showView('view-admin-create');
-    }
+    async function setupTeacherHost() {
+      currentRole = 'host';
+      currentRoomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
 
-    function createRoomAsAdmin() {
-      const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-      roomState.className = document.getElementById('cfg-class-name').value;
-      roomState.mode = document.getElementById('cfg-game-mode').value;
-      roomState.wordbank = document.getElementById('cfg-wordbank').value;
-      roomState.timerSec = parseInt(document.getElementById('cfg-timer').value);
-      roomState.status = 'lobby';
-      roomState.currentQIndex = 0;
-      roomState.participants = {};
+      document.getElementById('teacher-display-code').innerText = currentRoomCode;
+      document.getElementById('header-room-code').innerText = currentRoomCode;
+      document.getElementById('header-room-info').classList.remove('hidden');
+      document.getElementById('exit-room-btn').classList.remove('hidden');
 
-      initRealtimeSync(code);
-
-      document.getElementById('lobby-class-title').innerText = roomState.className;
-      document.getElementById('lobby-room-code').innerText = code;
-
-      // Generate QR Code
-      const qrContainer = document.getElementById('qrcode-container');
-      qrContainer.innerHTML = '';
-      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${code}`;
-      new QRCode(qrContainer, {
+      // Create QR Code
+      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${currentRoomCode}`;
+      document.getElementById('qrcode-container').innerHTML = '';
+      new QRCode(document.getElementById('qrcode-container'), {
         text: joinUrl,
-        width: 100,
-        height: 100,
-        colorDark: "#2A2520",
-        colorLight: "#FFFFFF",
-        correctLevel: QRCode.CorrectLevel.M
+        width: 120,
+        height: 120
       });
 
-      renderAdminLobbyRoster();
-      showView('view-admin-lobby');
-      broadcastRoomUpdate('ADMIN_STATE_SYNC');
+      // Write Room Node to Realtime Database
+      const roomRef = ref(db, `rooms/${currentRoomCode}`);
+      await set(roomRef, {
+        status: 'LOBBY',
+        mode: 1,
+        currentIndex: 0,
+        createdAt: Date.now()
+      });
+
+      // Listen to Players & Room State
+      onValue(ref(db, `rooms/${currentRoomCode}/players`), (snapshot) => {
+        const players = snapshot.val() || {};
+        updateTeacherDashboard(players);
+      });
+
+      showScreen('screen-teacher-dashboard');
     }
 
-    function renderAdminLobbyRoster() {
-      const grid = document.getElementById('lobby-roster-grid');
-      const keys = Object.keys(roomState.participants);
-      document.getElementById('lobby-count-badge').innerText = `${keys.length} Siswa`;
+    function updateTeacherDashboard(players) {
+      const rosterGrid = document.getElementById('teacher-roster-grid');
+      const leaderboardBox = document.getElementById('teacher-live-leaderboard');
+      
+      const playerList = Object.entries(players);
+      document.getElementById('roster-count-num').innerText = playerList.length;
 
-      if (keys.length === 0) {
-        grid.innerHTML = `
-          <div class="col-span-full text-center text-stone-400 font-semibold text-sm py-8">
-            Menunggu siswa bergabung melalui Kode Room / QR Code...
-          </div>
-        `;
+      if (playerList.length === 0) {
+        rosterGrid.innerHTML = `<p class="text-xs text-stone-400 italic col-span-full text-center py-6">Belum ada siswa yang bergabung. Bagikan kode room di atas!</p>`;
+        leaderboardBox.innerHTML = `<p class="text-xs text-stone-400 italic text-center py-4">Progres skor siswa akan muncul di sini.</p>`;
         return;
       }
 
-      grid.innerHTML = keys.map(k => {
-        const p = roomState.participants[k];
-        return `
-          <div class="tactile-card p-3 bg-white flex items-center gap-2 border-2 border-ink anim-bounce">
-            <span class="text-2xl">${p.avatar}</span>
-            <div class="truncate">
-              <span class="font-heading font-700 text-xs text-ink block truncate">${p.name}</span>
-              <span class="text-[10px] text-sage font-bold">Siap</span>
-            </div>
+      // Populate Roster
+      rosterGrid.innerHTML = playerList.map(([id, p]) => `
+        <div class="bg-sand/40 border border-sandborder p-2 rounded-xl flex items-center gap-2">
+          <span class="text-xl">${p.avatar || '🦊'}</span>
+          <div class="overflow-hidden">
+            <span class="text-xs font-bold text-ink truncate block">${p.name}</span>
+            <span class="text-[10px] font-mono text-sage font-bold">Score: ${p.score || 0}</span>
           </div>
-        `;
-      }).join('');
-    }
-
-    function simulateStudentTab() {
-      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
-      window.open(joinUrl, '_blank');
-    }
-
-    function copyShareLink() {
-      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${roomCode}`;
-      document.execCommand('copy');
-      navigator.clipboard.writeText(joinUrl).then(() => {
-        showToast('Link undangan berhasil disalin!', '📋');
-      }).catch(() => {
-        showToast('Link: ' + joinUrl, '📋');
-      });
-    }
-
-    function startGameFromAdmin() {
-      if (Object.keys(roomState.participants).length === 0) {
-        showToast('Minimal 1 siswa harus bergabung!', '⚠️');
-        return;
-      }
-
-      roomState.status = 'playing';
-      roomState.currentQIndex = 0;
-      startAdminQuestionTurn();
-    }
-
-    function startAdminQuestionTurn() {
-      if (gameTimerInterval) clearInterval(gameTimerInterval);
-      
-      roomState.timeRemaining = roomState.timerSec;
-      const target = VOCAB[roomState.currentQIndex];
-
-      document.getElementById('admin-q-num-badge').innerText = `SOAL ${roomState.currentQIndex + 1}/7`;
-      document.getElementById('admin-q-tpr').innerText = `"${target.tpr}"`;
-      document.getElementById('admin-q-sub').innerText = `Target: ${target.english} (${target.indo})`;
-
-      document.getElementById('admin-character-container').innerHTML = createSVGCharacterMarkup('admin');
-      highlightTargetHotspot(target.id, 'admin');
-
-      showView('view-admin-gameplay');
-      broadcastRoomUpdate('ADMIN_STATE_SYNC');
-
-      speakText(target.tpr);
-
-      // Start Countdown
-      gameTimerInterval = setInterval(() => {
-        roomState.timeRemaining--;
-        document.getElementById('admin-timer-num').innerText = roomState.timeRemaining;
-
-        if (roomState.timeRemaining <= 0) {
-          clearInterval(gameTimerInterval);
-          forceNextQuestionAdmin();
-        }
-      }, 1000);
-    }
-
-    function triggerAudioForCurrentQ() {
-      const target = VOCAB[roomState.currentQIndex];
-      speakText(target.tpr);
-    }
-
-    function renderAdminGameplayView() {
-      const qIndex = roomState.currentQIndex;
-      const keys = Object.keys(roomState.participants);
-      
-      let answeredCount = 0;
-      keys.forEach(k => {
-        if (roomState.participants[k].answers[qIndex] !== undefined) answeredCount++;
-      });
-
-      document.getElementById('admin-answered-count').innerText = answeredCount;
-      document.getElementById('admin-total-students').innerText = keys.length;
-
-      // Render Leaderboard
-      const sorted = [...keys].sort((a,b) => roomState.participants[b].score - roomState.participants[a].score);
-      const lb = document.getElementById('admin-live-leaderboard');
-      
-      lb.innerHTML = sorted.map((k, i) => {
-        const p = roomState.participants[k];
-        const hasAns = p.answers[qIndex] !== undefined;
-        return `
-          <div class="bg-white p-2.5 rounded-xl border border-ink flex items-center justify-between text-xs">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-stone-400">#${i+1}</span>
-              <span>${p.avatar}</span>
-              <span class="font-heading font-700 text-ink">${p.name}</span>
-            </div>
-            <div class="flex items-center gap-2">
-              ${hasAns ? '<span class="text-[10px] bg-sage-light text-sage font-bold px-1.5 py-0.5 rounded">Sudah</span>' : ''}
-              <span class="font-mono font-700 text-terracotta">${p.score} pt</span>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function forceNextQuestionAdmin() {
-      if (gameTimerInterval) clearInterval(gameTimerInterval);
-      
-      roomState.currentQIndex++;
-      if (roomState.currentQIndex >= 7) {
-        // Game Finished -> Recap
-        roomState.status = 'recap';
-        showAdminRecapScreen();
-      } else {
-        startAdminQuestionTurn();
-      }
-    }
-
-    function endGameEarlyAdmin() {
-      if (confirm('Yakin ingin mengakhiri permainan sekarang?')) {
-        if (gameTimerInterval) clearInterval(gameTimerInterval);
-        roomState.status = 'recap';
-        showAdminRecapScreen();
-      }
-    }
-
-    function showAdminRecapScreen() {
-      broadcastRoomUpdate('ADMIN_STATE_SYNC');
-
-      const keys = Object.keys(roomState.participants);
-      const sorted = [...keys].sort((a,b) => roomState.participants[b].score - roomState.participants[a].score);
-
-      // Render Top 3 Podium
-      const pod = document.getElementById('podium-container');
-      pod.innerHTML = '';
-
-      const ranks = [
-        { pos: '🥈 Juara 2', idx: 1, color: 'bg-sand' },
-        { pos: '🏆 Juara 1', idx: 0, color: 'bg-mustard-light border-terracotta' },
-        { pos: '🥉 Juara 3', idx: 2, color: 'bg-sand' }
-      ];
-
-      ranks.forEach(r => {
-        const key = sorted[r.idx];
-        if (key) {
-          const p = roomState.participants[key];
-          pod.innerHTML += `
-            <div class="tactile-card p-4 ${r.color} text-center space-y-2 border-2 border-ink">
-              <span class="text-xs font-bold text-stone-500 uppercase">${r.pos}</span>
-              <div class="text-4xl">${p.avatar}</div>
-              <h4 class="font-heading font-700 text-lg text-ink truncate">${p.name}</h4>
-              <span class="font-mono font-700 text-terracotta text-xl">${p.score} Pts</span>
-            </div>
-          `;
-        }
-      });
-
-      renderRecapTable();
-      showView('view-admin-recap');
-      playSound('correct');
-    }
-
-    function renderRecapTable() {
-      const keys = Object.keys(roomState.participants);
-      const sorted = [...keys].sort((a,b) => roomState.participants[b].score - roomState.participants[a].score);
-      const tbody = document.getElementById('recap-table-body');
-
-      tbody.innerHTML = sorted.map((k, i) => {
-        const p = roomState.participants[k];
-        const correct = p.correctCount || 0;
-        const accuracy = Math.round((correct / 7) * 100);
-
-        let category = 'Perlu Bimbingan';
-        let catColor = 'bg-terracotta-light text-terracotta border-terracotta';
-        if (correct >= 6) {
-          category = 'Sangat Siap';
-          catColor = 'bg-sage-light text-sage border-sage';
-        } else if (correct >= 4) {
-          category = 'Siap';
-          catColor = 'bg-mustard-light text-ink border-mustard';
-        }
-
-        return `
-          <tr class="hover:bg-sand/30 font-semibold">
-            <td class="p-3">${i+1}</td>
-            <td class="p-3 flex items-center gap-2">
-              <span>${p.avatar}</span>
-              <span class="font-heading text-ink">${p.name}</span>
-            </td>
-            <td class="p-3 text-center font-mono text-base text-terracotta">${correct} / 7</td>
-            <td class="p-3 text-center font-mono">${accuracy}%</td>
-            <td class="p-3">
-              <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${catColor}">${category}</span>
-            </td>
-            <td class="p-3 text-xs italic text-stone-600">${p.exitTicket || '-'}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function exportRecapCSV() {
-      const keys = Object.keys(roomState.participants);
-      let csv = 'No,Nama Siswa,Skor Label (0-7),Akurasi,Kategori Kesiapan RPP,Refleksi Exit Ticket\n';
-      
-      keys.forEach((k, idx) => {
-        const p = roomState.participants[k];
-        const correct = p.correctCount || 0;
-        const acc = Math.round((correct / 7) * 100) + '%';
-        let cat = correct >= 6 ? 'Sangat Siap' : (correct >= 4 ? 'Siap' : 'Perlu Bimbingan');
-        csv += `${idx+1},"${p.name}",${correct}/7,${acc},"${cat}","${p.exitTicket || '-'}"\n`;
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Rekap_RPP_MyBody_${roomCode}.csv`;
-      a.click();
-    }
-
-    /* ==========================================================================
-       7. STUDENT FLOW
-       ========================================================================== */
-    function showStudentJoinScreen() {
-      currentRole = 'student';
-
-      // Populate Avatar selection grid
-      const grid = document.getElementById('badge-selector-grid');
-      grid.innerHTML = AVATARS.map((av, idx) => `
-        <button onclick="selectAvatar('${av}')" class="w-10 h-10 rounded-xl bg-sand border-2 border-ink flex items-center justify-center text-xl avatar-btn ${idx === 0 ? 'bg-sage-light border-sage' : ''}">
-          ${av}
-        </button>
+        </div>
       `).join('');
 
-      // Auto fill room code if in URL parameter `?room=XXXXX`
-      const urlParams = new URLSearchParams(window.location.search);
-      const urlRoom = urlParams.get('room');
-      if (urlRoom) {
-        document.getElementById('input-student-room').value = urlRoom.toUpperCase();
-      }
-
-      showView('view-student-join');
+      // Populate Live Leaderboard (Sorted by score)
+      const sorted = [...playerList].sort((a, b) => (b[1].score || 0) - (a[1].score || 0));
+      leaderboardBox.innerHTML = sorted.map(([id, p], idx) => `
+        <div class="flex items-center justify-between p-2 rounded-xl bg-sand/30 border border-sandborder text-xs">
+          <div class="flex items-center gap-1.5">
+            <span class="font-bold text-stone-500 w-4">${idx + 1}.</span>
+            <span>${p.avatar || '🦊'}</span>
+            <span class="font-semibold text-ink">${p.name}</span>
+          </div>
+          <span class="font-mono font-bold text-coral">${p.score || 0} pts</span>
+        </div>
+      `).join('');
     }
 
-    function selectAvatar(av) {
-      studentProfile.avatar = av;
-      document.querySelectorAll('.avatar-btn').forEach(btn => {
-        if (btn.innerText.trim() === av) {
-          btn.className = 'w-10 h-10 rounded-xl bg-sage-light border-2 border-sage flex items-center justify-center text-xl avatar-btn';
-        } else {
-          btn.className = 'w-10 h-10 rounded-xl bg-sand border-2 border-ink flex items-center justify-center text-xl avatar-btn';
+    async function teacherStartGame(modeNum) {
+      if (!currentRoomCode) return;
+      gameState.status = 'PLAYING';
+      gameState.mode = modeNum;
+      gameState.currentIndex = 0;
+
+      await update(ref(db, `rooms/${currentRoomCode}`), {
+        status: 'PLAYING',
+        mode: modeNum,
+        currentIndex: 0
+      });
+
+      startGameplayView();
+    }
+
+    async function teacherNextQuestion() {
+      if (!currentRoomCode) return;
+      gameState.currentIndex++;
+      if (gameState.currentIndex >= VOCAB_DATA.length) {
+        // Move to Exit Ticket / Finished
+        await update(ref(db, `rooms/${currentRoomCode}`), {
+          status: 'EXIT_TICKET'
+        });
+      } else {
+        await update(ref(db, `rooms/${currentRoomCode}`), {
+          currentIndex: gameState.currentIndex
+        });
+      }
+    }
+
+    async function teacherFinishSession() {
+      if (!currentRoomCode) return;
+      await update(ref(db, `rooms/${currentRoomCode}`), {
+        status: 'FINISHED'
+      });
+      loadAssessmentRecap();
+    }
+
+    /* ==========================================================================
+       5. STUDENT JOIN & REALTIME SYNC
+       ========================================================================== */
+    async function submitStudentJoin() {
+      const roomInput = document.getElementById('join-room-input').value.trim().toUpperCase();
+      const nameInput = document.getElementById('join-name-input').value.trim();
+      const errBox = document.getElementById('join-error-msg');
+
+      if (!roomInput || !nameInput) {
+        errBox.innerText = "Mohon isi kode room dan nama siswa!";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      // Verify room exists in Firebase
+      const roomSnapshot = await get(ref(db, `rooms/${roomInput}`));
+      if (!roomSnapshot.exists()) {
+        errBox.innerText = "Room tidak ditemukan. Pastikan Pak/Bu Guru sudah membuat room!";
+        errBox.classList.remove('hidden');
+        return;
+      }
+
+      errBox.classList.add('hidden');
+      currentRole = 'student';
+      currentRoomCode = roomInput;
+      myStudentId = 'std_' + Math.random().toString(36).substring(2, 9);
+
+      document.getElementById('header-room-code').innerText = currentRoomCode;
+      document.getElementById('header-room-info').classList.remove('hidden');
+      document.getElementById('exit-room-btn').classList.remove('hidden');
+
+      // Write student record
+      await set(ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`), {
+        name: nameInput,
+        avatar: selectedAvatar,
+        score: 0,
+        joinedAt: Date.now()
+      });
+
+      document.getElementById('student-my-avatar').innerText = selectedAvatar;
+      document.getElementById('student-my-name').innerText = nameInput;
+
+      // Listen to Room State Changes in Real-Time
+      onValue(ref(db, `rooms/${currentRoomCode}`), (snapshot) => {
+        const roomData = snapshot.val();
+        if (!roomData) return;
+
+        gameState.status = roomData.status || 'LOBBY';
+        gameState.mode = roomData.mode || 1;
+        gameState.currentIndex = roomData.currentIndex || 0;
+
+        if (gameState.status === 'LOBBY') {
+          showScreen('screen-student-waiting');
+        } else if (gameState.status === 'PLAYING') {
+          startGameplayView();
+        } else if (gameState.status === 'EXIT_TICKET') {
+          showScreen('screen-exit-ticket');
+        } else if (gameState.status === 'FINISHED') {
+          if (currentRole === 'host') loadAssessmentRecap();
+          else showScreen('screen-exit-ticket');
         }
       });
-      playSound('pop');
-    }
 
-    function submitStudentJoin() {
-      const code = document.getElementById('input-student-room').value.trim().toUpperCase();
-      const name = document.getElementById('input-student-name').value.trim();
-
-      if (!code || code.length < 4) {
-        showToast('Masukkan Kode Room 5 digit yang valid!', '⚠️');
-        return;
-      }
-      if (!name) {
-        showToast('Masukkan Nama Siswa atau Kelompok!', '⚠️');
-        return;
-      }
-
-      studentProfile.name = name;
-      initRealtimeSync(code);
-
-      document.getElementById('student-waiting-name').innerText = name;
-      document.getElementById('student-waiting-avatar').innerText = studentProfile.avatar;
-      document.getElementById('student-waiting-roomcode').innerText = code;
-
-      // Broadcast join event
-      broadcastRoomUpdate('STUDENT_JOIN', {
-        id: studentProfile.id,
-        name: studentProfile.name,
-        avatar: studentProfile.avatar
-      });
-
-      showView('view-student-waiting');
-    }
-
-    function renderStudentState() {
-      if (currentRole !== 'student') return;
-
-      if (roomState.status === 'lobby') {
-        showView('view-student-waiting');
-      } else if (roomState.status === 'playing') {
-        loadStudentGameplayQ();
-      } else if (roomState.status === 'recap') {
-        showStudentResultScreen();
-      }
-    }
-
-    function loadStudentGameplayQ() {
-      showView('view-student-gameplay');
-
-      const qIndex = roomState.currentQIndex;
-      const target = VOCAB[qIndex];
-
-      document.getElementById('st-badge-display').innerText = studentProfile.avatar;
-      document.getElementById('st-name-display').innerText = studentProfile.name;
-      document.getElementById('st-q-badge').innerText = `Q ${qIndex + 1}/7`;
-      document.getElementById('st-score-display').innerText = studentProfile.score;
-
-      // Determine active mode for question (Listen & Touch vs Labeling)
-      let activeMode = roomState.mode;
-      if (activeMode === 'mix') {
-        activeMode = (qIndex % 2 === 0) ? '1' : '2';
-      }
-
-      // Reset Answer overlay
-      document.getElementById('st-answer-overlay').classList.add('hidden');
-      studentProfile.hasAnsweredCurrentQ = false;
-
-      // Timer Bar sync
-      const timerPercent = (roomState.timeRemaining / roomState.timerSec) * 100;
-      document.getElementById('st-timer-bar').style.width = `${timerPercent}%`;
-
-      if (activeMode === '1') {
-        // MODE 1: LISTEN & TOUCH
-        document.getElementById('st-mode-tag').innerText = 'Listen & Touch Mode';
-        document.getElementById('st-prompt-title').innerText = `"${target.tpr}"`;
-
-        document.getElementById('st-area-mode1').classList.remove('hidden');
-        document.getElementById('st-area-mode2').classList.add('hidden');
-
-        document.getElementById('st-character-svg-container').innerHTML = createSVGCharacterMarkup('student');
-        highlightTargetHotspot(target.id, 'student');
-
-      } else {
-        // MODE 2: LABEL THE BODY (SPELLING)
-        document.getElementById('st-mode-tag').innerText = 'Label the Body (Spelling)';
-        document.getElementById('st-prompt-title').innerText = `Eja nama bagian tubuh Pin #${target.pin} (${target.indo})`;
-
-        document.getElementById('st-area-mode1').classList.add('hidden');
-        document.getElementById('st-area-mode2').classList.remove('hidden');
-
-        setupStudentSpellingState(target);
-      }
-    }
-
-    function setupStudentSpellingState(target) {
-      currentSpellingLetters = [];
-
-      // Render Word Bank chips if enabled
-      const wbBox = document.getElementById('st-wordbank-container');
-      if (roomState.wordbank === 'yes') {
-        wbBox.classList.remove('hidden');
-        const chips = document.getElementById('st-wordbank-chips');
-        chips.innerHTML = VOCAB.map(v => `
-          <span class="bg-white px-2 py-0.5 rounded border border-ink text-xs font-mono font-bold">${v.english}</span>
-        `).join('');
-      } else {
-        wbBox.classList.add('hidden');
-      }
-
-      renderStudentSpellingSlots(target.english.length);
-      renderStudentSpellingTiles(target.english);
-    }
-
-    function renderStudentSpellingSlots(length) {
-      const slots = document.getElementById('st-spelling-slots');
-      slots.innerHTML = '';
-      for (let i = 0; i < length; i++) {
-        const char = currentSpellingLetters[i] || '';
-        slots.innerHTML += `
-          <div class="spelling-slot ${char ? 'filled' : ''}">${char.toUpperCase()}</div>
-        `;
-      }
-    }
-
-    function renderStudentSpellingTiles(word) {
-      const deck = document.getElementById('st-spelling-deck');
-      deck.innerHTML = '';
-
-      let letters = word.split('');
-      const alpha = 'abcdefghijklmnopqrstuvwxyz';
-      while (letters.length < word.length + 3) {
-        const r = alpha[Math.floor(Math.random() * alpha.length)];
-        if (!letters.includes(r)) letters.push(r);
-      }
-      letters.sort(() => Math.random() - 0.5);
-
-      letters.forEach(char => {
-        const btn = document.createElement('button');
-        btn.className = 'spelling-tile';
-        btn.innerText = char.toUpperCase();
-        btn.onclick = () => stAddLetter(char);
-        deck.appendChild(btn);
-      });
-    }
-
-    function stAddLetter(char) {
-      const target = VOCAB[roomState.currentQIndex];
-      if (currentSpellingLetters.length < target.english.length) {
-        playSound('pop');
-        currentSpellingLetters.push(char);
-        renderStudentSpellingSlots(target.english.length);
-      }
-    }
-
-    function stBackspace() {
-      if (currentSpellingLetters.length > 0) {
-        playSound('pop');
-        currentSpellingLetters.pop();
-        const target = VOCAB[roomState.currentQIndex];
-        renderStudentSpellingSlots(target.english.length);
-      }
-    }
-
-    function stClear() {
-      playSound('pop');
-      currentSpellingLetters = [];
-      const target = VOCAB[roomState.currentQIndex];
-      renderStudentSpellingSlots(target.english.length);
-    }
-
-    function stSubmitSpelling() {
-      if (studentProfile.hasAnsweredCurrentQ) return;
-      const target = VOCAB[roomState.currentQIndex];
-      const attempt = currentSpellingLetters.join('').toLowerCase();
-
-      handleStudentAnswerAttempt(attempt === target.english, target.english);
-    }
-
-    function handleStudentAnswerAttempt(isCorrect, targetWord) {
-      if (studentProfile.hasAnsweredCurrentQ) return;
-      studentProfile.hasAnsweredCurrentQ = true;
-
-      const overlay = document.getElementById('st-answer-overlay');
-      const icon = document.getElementById('st-feedback-icon');
-      const title = document.getElementById('st-feedback-title');
-      const sub = document.getElementById('st-feedback-sub');
-
-      let scoreAdd = 0;
-      if (isCorrect) {
-        scoreAdd = 100 + (roomState.timeRemaining * 2);
-        studentProfile.score += scoreAdd;
-        studentProfile.correctCount += 1;
-
-        playSound('correct');
-        icon.innerText = '🎉';
-        title.innerText = 'Jawaban Benar!';
-        title.className = 'font-heading text-2xl font-700 text-sage';
-        sub.innerText = `Kamu mendapatkan +${scoreAdd} Poin (${targetWord.toUpperCase()})`;
-      } else {
-        playSound('wrong');
-        icon.innerText = '❌';
-        title.innerText = 'Kurang Tepat';
-        title.className = 'font-heading text-2xl font-700 text-terracotta';
-        sub.innerText = `Jawaban yang benar adalah: ${targetWord.toUpperCase()}`;
-      }
-
-      overlay.classList.remove('hidden');
-
-      // Sync answer with host
-      broadcastRoomUpdate('STUDENT_ANSWER', {
-        pid: studentProfile.id,
-        qIndex: roomState.currentQIndex,
-        isCorrect: isCorrect,
-        scoreAdd: scoreAdd
-      });
-    }
-
-    function handleBodyPartClick(partId) {
-      if (currentRole === 'student' && !studentProfile.hasAnsweredCurrentQ) {
-        const target = VOCAB[roomState.currentQIndex];
-        handleStudentAnswerAttempt(partId === target.id, target.english);
-      } else if (currentRole === 'solo') {
-        handleSoloClick(partId);
-      }
-    }
-
-    function showStudentResultScreen() {
-      document.getElementById('st-res-score').innerText = studentProfile.score;
-      document.getElementById('st-res-accuracy').innerText = `${studentProfile.correctCount} / 7`;
-      showView('view-student-result');
-    }
-
-    function submitExitTicket() {
-      const val = document.querySelector('input[name="exit-ticket"]:checked')?.value || '😊 Bisa sendiri';
-      
-      broadcastRoomUpdate('STUDENT_EXIT_TICKET', {
-        pid: studentProfile.id,
-        reflection: val
-      });
-
-      showToast('Refleksi diri berhasil dikirim ke Guru!', '✨');
-      setTimeout(() => {
-        goHome();
-      }, 1500);
+      showScreen('screen-student-waiting');
     }
 
     /* ==========================================================================
-       8. SOLO / OFFLINE PLAY MODE
+       6. GAMEPLAY CONTROLLER (MODE 1 & MODE 2)
        ========================================================================== */
-    function startSoloOfflineMode() {
-      currentRole = 'solo';
-      roomState.currentQIndex = 0;
-      studentProfile.score = 0;
-      studentProfile.correctCount = 0;
-      studentProfile.name = 'Pemain Solo';
-      studentProfile.avatar = '🌟';
+    function startGameplayView() {
+      showScreen('screen-gameplay');
+      
+      const target = VOCAB_DATA[gameState.currentIndex];
+      document.getElementById('gameplay-q-num').innerText = gameState.currentIndex + 1;
+      document.getElementById('gameplay-mode-tag').innerText = `Mode ${gameState.mode}: ${gameState.mode === 1 ? 'Listen & Touch' : 'Label the Body'}`;
+      document.getElementById('gameplay-prompt-title').innerText = `"${target.tpr}"`;
 
-      roomState.mode = '1';
-      roomState.timeRemaining = 20;
-      roomState.timerSec = 20;
-      roomState.wordbank = 'yes';
+      // Speak command
+      speakText(target.tpr);
 
-      loadStudentGameplayQ();
+      if (currentRole === 'host') {
+        document.getElementById('host-next-q-btn').classList.remove('hidden');
+      } else {
+        document.getElementById('host-next-q-btn').classList.add('hidden');
+      }
+
+      if (gameState.mode === 1) {
+        document.getElementById('mode1-board').classList.remove('hidden');
+        document.getElementById('mode2-board').classList.add('hidden');
+        document.getElementById('svg-character-container-m1').innerHTML = createSVGCharacterMarkup('m1');
+        highlightTargetHotspot(target.id, 'm1');
+      } else {
+        document.getElementById('mode1-board').classList.add('hidden');
+        document.getElementById('mode2-board').classList.remove('hidden');
+        document.getElementById('svg-character-container-m2').innerHTML = createSVGCharacterMarkup('m2');
+        m2TargetIndex = gameState.currentIndex;
+        loadMode2Target();
+      }
     }
 
-    function handleSoloClick(partId) {
-      const target = VOCAB[roomState.currentQIndex];
-      const isCorrect = partId === target.id;
-      
-      if (isCorrect) {
-        playSound('correct');
-        studentProfile.score += 100;
-        studentProfile.correctCount += 1;
-      } else {
-        playSound('wrong');
-      }
-
-      roomState.currentQIndex++;
-      if (roomState.currentQIndex >= 7) {
-        showStudentResultScreen();
-      } else {
-        loadStudentGameplayQ();
-      }
+    function replayCurrentVoicePrompt() {
+      const target = VOCAB_DATA[gameState.currentIndex];
+      speakText(target.tpr);
+      playSoundEffect('click');
     }
 
     /* ==========================================================================
-       9. SVG CHARACTER ARTWORK GENERATOR
+       7. SVG CHARACTER GENERATOR & TOUCH HANDLERS
        ========================================================================== */
-    function createSVGCharacterMarkup(containerId) {
+    function createSVGCharacterMarkup(modeSuffix) {
       return `
-        <svg viewBox="0 0 400 440" class="w-full h-auto drop-shadow-md overflow-visible" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 400 450" class="w-full h-auto drop-shadow-md overflow-visible" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="skinGrad_${containerId}" x1="0%" y1="0%" x2="0%" y2="100%">
+            <linearGradient id="skinGrad" x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stop-color="#FCE5D8" />
               <stop offset="100%" stop-color="#F5D2C1" />
             </linearGradient>
-            <linearGradient id="shirtGrad_${containerId}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stop-color="#E05A47" />
               <stop offset="100%" stop-color="#B93D2C" />
             </linearGradient>
           </defs>
 
-          <!-- Base Shadow -->
-          <ellipse cx="200" cy="420" rx="90" ry="10" fill="#E2D8C8" />
+          <ellipse cx="200" cy="425" rx="100" ry="12" fill="#E5DDD0" />
 
           <!-- ART GROUP -->
           <g id="character-art-group">
-            <!-- LEGS -->
-            <rect x="160" y="290" width="28" height="95" rx="14" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3"/>
-            <path d="M150 375 Q160 370 185 370 Q195 370 195 385 Q170 390 150 375 Z" fill="#2E8B57" stroke="#2A2520" stroke-width="3"/>
-            
-            <rect x="212" y="290" width="28" height="95" rx="14" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3"/>
-            <path d="M205 375 Q215 370 240 370 Q250 370 250 385 Q225 390 205 375 Z" fill="#2E8B57" stroke="#2A2520" stroke-width="3"/>
+            <g id="part-legs-art">
+              <rect x="160" y="290" width="30" height="100" rx="15" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3"/>
+              <path d="M150 380 Q160 375 185 375 Q195 375 195 390 Q170 395 150 380 Z" fill="#2E8B57" stroke="#1E242B" stroke-width="3"/>
+              <rect x="210" y="290" width="30" height="100" rx="15" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3"/>
+              <path d="M205 380 Q215 375 240 375 Q250 375 250 390 Q225 395 205 380 Z" fill="#2E8B57" stroke="#1E242B" stroke-width="3"/>
+              <path d="M150 250 L250 250 L245 295 L205 295 L200 270 L195 295 L155 295 Z" fill="#1E242B" stroke="#1E242B" stroke-width="3"/>
+            </g>
 
-            <!-- SHORTS -->
-            <path d="M150 250 L250 250 L245 295 L205 295 L200 270 L195 295 L155 295 Z" fill="#2A2520" stroke="#2A2520" stroke-width="3"/>
+            <path d="M140 170 C140 160 260 160 260 170 L255 255 L145 255 Z" fill="url(#shirtGrad)" stroke="#1E242B" stroke-width="3.5"/>
 
-            <!-- TORSO -->
-            <path d="M140 170 C140 160 260 160 260 170 L255 255 L145 255 Z" fill="url(#shirtGrad_${containerId})" stroke="#2A2520" stroke-width="3.5"/>
+            <g id="part-hands-art">
+              <path d="M142 175 Q110 210 95 240" fill="none" stroke="url(#skinGrad)" stroke-width="24" stroke-linecap="round"/>
+              <circle cx="92" cy="245" r="18" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3"/>
+              <path d="M258 175 Q290 210 305 240" fill="none" stroke="url(#skinGrad)" stroke-width="24" stroke-linecap="round"/>
+              <circle cx="308" cy="245" r="18" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3"/>
+            </g>
 
-            <!-- ARMS & HANDS -->
-            <path d="M142 175 Q110 210 95 240" fill="none" stroke="url(#skinGrad_${containerId})" stroke-width="24" stroke-linecap="round"/>
-            <circle cx="92" cy="245" r="18" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3"/>
+            <g id="part-ears-art">
+              <circle cx="146" cy="95" r="14" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3"/>
+              <circle cx="254" cy="95" r="14" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3"/>
+            </g>
 
-            <path d="M258 175 Q290 210 305 240" fill="none" stroke="url(#skinGrad_${containerId})" stroke-width="24" stroke-linecap="round"/>
-            <circle cx="308" cy="245" r="18" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3"/>
+            <g id="part-head-art">
+              <ellipse cx="200" cy="95" rx="56" ry="62" fill="url(#skinGrad)" stroke="#1E242B" stroke-width="3.5"/>
+              <path d="M144 85 C140 35 260 35 256 85 C240 60 220 50 200 55 C180 50 160 60 144 85 Z" fill="#7C2D12" stroke="#1E242B" stroke-width="3"/>
+            </g>
 
-            <!-- EARS -->
-            <circle cx="146" cy="95" r="14" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3"/>
-            <circle cx="254" cy="95" r="14" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3"/>
+            <g id="part-eyes-art" class="eye-blink">
+              <ellipse cx="178" cy="88" rx="8" ry="10" fill="#FFFFFF" stroke="#1E242B" stroke-width="2.5"/>
+              <circle cx="178" cy="89" r="4.5" fill="#1E242B"/>
+              <ellipse cx="222" cy="88" rx="8" ry="10" fill="#FFFFFF" stroke="#1E242B" stroke-width="2.5"/>
+              <circle cx="222" cy="89" r="4.5" fill="#1E242B"/>
+            </g>
 
-            <!-- HEAD -->
-            <ellipse cx="200" cy="95" rx="56" ry="62" fill="url(#skinGrad_${containerId})" stroke="#2A2520" stroke-width="3.5"/>
-            <path d="M144 85 C140 35 260 35 256 85 C240 60 220 50 200 55 C180 50 160 60 144 85 Z" fill="#7C2D12" stroke="#2A2520" stroke-width="3"/>
+            <g id="part-nose-art">
+              <path d="M200 96 Q195 106 200 108 Q204 108 202 104" fill="none" stroke="#D44A36" stroke-width="3" stroke-linecap="round"/>
+            </g>
 
-            <!-- EYES -->
-            <ellipse cx="178" cy="88" rx="8" ry="10" fill="#FFFFFF" stroke="#2A2520" stroke-width="2.5"/>
-            <circle cx="178" cy="89" r="4" fill="#2A2520"/>
-
-            <ellipse cx="222" cy="88" rx="8" ry="10" fill="#FFFFFF" stroke="#2A2520" stroke-width="2.5"/>
-            <circle cx="222" cy="89" r="4" fill="#2A2520"/>
-
-            <!-- NOSE & MOUTH -->
-            <path d="M200 96 Q195 106 200 108" fill="none" stroke="#E05A47" stroke-width="3" stroke-linecap="round"/>
-            <path d="M186 118 Q200 134 214 118" fill="#B93D2C" stroke="#2A2520" stroke-width="2.5" stroke-linecap="round"/>
+            <g id="part-mouth-art">
+              <path d="M186 118 Q200 134 214 118" fill="#B93D2C" stroke="#1E242B" stroke-width="2.5" stroke-linecap="round"/>
+            </g>
           </g>
 
-          <!-- INTERACTIVE HOTSPOTS -->
+          <!-- HOTSPOT INTERACTIVE OVERLAYS -->
           <g id="hotspots-group">
-            ${VOCAB.map(v => `
-              <g onclick="handleBodyPartClick('${v.id}')" class="cursor-pointer">
-                <circle id="hotspot-${v.id}-${containerId}" 
-                        cx="${v.x}" cy="${v.y}" r="${v.r}" 
-                        class="body-target-hotspot stroke-terracotta fill-terracotta" />
-
-                <!-- Callout Pin Badge -->
-                <g id="pin-${v.id}-${containerId}" transform="translate(${v.x + (v.x > 200 ? 30 : -42)}, ${v.y - 14})">
-                  <rect width="26" height="26" rx="8" fill="#E9A825" stroke="#2A2520" stroke-width="2"/>
-                  <text x="13" y="18" text-anchor="middle" fill="#2A2520" font-family="Fredoka" font-size="15" font-weight="700">${v.pin}</text>
+            ${VOCAB_DATA.map(v => `
+              <g class="hotspot-wrapper" onclick="handleBodyPartTouch('${v.id}')">
+                <circle id="hotspot-${v.id}-${modeSuffix}" cx="${v.x}" cy="${v.y}" r="${v.r}" 
+                        class="body-part-hotspot stroke-coral fill-coral" />
+                <g class="pin-badge" transform="translate(${v.x + (v.x > 200 ? 25 : -40)}, ${v.y - 12})">
+                  <rect width="26" height="26" rx="8" fill="#E05A47" stroke="#1E242B" stroke-width="2"/>
+                  <text x="13" y="18" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-size="14" font-weight="700">${v.pin}</text>
                 </g>
               </g>
             `).join('')}
@@ -1663,45 +1155,263 @@
       `;
     }
 
-    function highlightTargetHotspot(partId, modeSuffix) {
-      document.querySelectorAll('.body-target-hotspot').forEach(el => {
-        el.classList.remove('active-pulse');
-      });
-      const activeEl = document.getElementById(`hotspot-${partId}-${modeSuffix}`);
-      if (activeEl) activeEl.classList.add('active-pulse');
-    }
+    async function handleBodyPartTouch(partId) {
+      if (gameState.mode !== 1) return;
+      const target = VOCAB_DATA[gameState.currentIndex];
+      const fb = document.getElementById('m1-feedback-box');
 
-    /* ==========================================================================
-       10. UTILITIES
-       ========================================================================== */
-    function showToast(msg, icon = 'ℹ️') {
-      const toast = document.getElementById('toast-notification');
-      document.getElementById('toast-msg').innerText = msg;
-      document.getElementById('toast-icon').innerText = icon;
-      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      if (partId === target.id) {
+        playSoundEffect('correct');
+        speakText(`${target.english}!`);
 
-      setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
-      }, 2500);
-    }
+        fb.className = "min-h-[90px] bg-sage-light p-3 rounded-2xl border-2 border-sage flex flex-col items-center justify-center text-center";
+        fb.innerHTML = `<span class="text-2xl mb-0.5">🎉 Correct!</span><p class="text-xs font-bold text-sage">Jawabanmu tepat: ${target.english} (${target.indo})</p>`;
 
-    function toggleFullscreen() {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
+        // Update score in Firebase
+        if (currentRole === 'student' && myStudentId && currentRoomCode) {
+          const scoreRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}/score`);
+          const snap = await get(scoreRef);
+          const currentScore = snap.val() || 0;
+          await set(scoreRef, currentScore + 10);
+        }
+
       } else {
-        if (document.exitFullscreen) document.exitFullscreen();
+        playSoundEffect('wrong');
+        const wrongPart = VOCAB_DATA.find(v => v.id === partId);
+        fb.className = "min-h-[90px] bg-coral-light p-3 rounded-2xl border-2 border-coral flex flex-col items-center justify-center text-center";
+        fb.innerHTML = `<span class="text-xl mb-0.5">❌ Try Again!</span><p class="text-xs font-bold text-coral">Itu adalah ${wrongPart ? wrongPart.english : partId}. Coba lagi!</p>`;
       }
     }
 
-    // Auto-detect URL parameter `?room=XXXXX` on load
+    function highlightTargetHotspot(partId, modeSuffix) {
+      document.querySelectorAll('.body-part-hotspot').forEach(el => el.classList.remove('active-target'));
+      const activeEl = document.getElementById(`hotspot-${partId}-${modeSuffix}`);
+      if (activeEl) activeEl.classList.add('active-target');
+    }
+
+    /* ==========================================================================
+       8. MODE 2 SPELLING HANDLERS
+       ========================================================================== */
+    function loadMode2Target() {
+      m2CurrentSpelling = [];
+      const target = VOCAB_DATA[m2TargetIndex];
+
+      highlightTargetHotspot(target.id, 'm2');
+      renderM2Slots(target.english.length);
+      renderM2Tiles(target.english);
+
+      document.getElementById('m2-feedback-status').innerHTML = `<span class="text-stone-500">Susun label huruf untuk Pin #${target.pin}!</span>`;
+    }
+
+    function renderM2Slots(length) {
+      const container = document.getElementById('m2-letter-slots-container');
+      container.innerHTML = '';
+      for (let i = 0; i < length; i++) {
+        const char = m2CurrentSpelling[i] || '';
+        const slot = document.createElement('div');
+        slot.className = `letter-slot ${char ? 'filled' : ''}`;
+        slot.innerText = char.toUpperCase();
+        container.appendChild(slot);
+      }
+    }
+
+    function renderM2Tiles(word) {
+      const deck = document.getElementById('m2-tiles-deck');
+      deck.innerHTML = '';
+      let letters = word.split('');
+      const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+      while (letters.length < word.length + 2) {
+        const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
+        if (!letters.includes(randChar)) letters.push(randChar);
+      }
+      letters.sort(() => Math.random() - 0.5);
+
+      letters.forEach(char => {
+        const btn = document.createElement('button');
+        btn.className = 'letter-tile';
+        btn.innerText = char.toUpperCase();
+        btn.onclick = () => m2TileClick(char);
+        deck.appendChild(btn);
+      });
+    }
+
+    function m2TileClick(char) {
+      const target = VOCAB_DATA[m2TargetIndex];
+      if (m2CurrentSpelling.length < target.english.length) {
+        playSoundEffect('click');
+        m2CurrentSpelling.push(char);
+        renderM2Slots(target.english.length);
+
+        if (m2CurrentSpelling.length === target.english.length) {
+          validateM2Spelling();
+        }
+      }
+    }
+
+    function m2Backspace() {
+      if (m2CurrentSpelling.length > 0) {
+        playSoundEffect('click');
+        m2CurrentSpelling.pop();
+        renderM2Slots(VOCAB_DATA[m2TargetIndex].english.length);
+      }
+    }
+
+    function m2Clear() {
+      playSoundEffect('click');
+      m2CurrentSpelling = [];
+      renderM2Slots(VOCAB_DATA[m2TargetIndex].english.length);
+    }
+
+    async function validateM2Spelling() {
+      const target = VOCAB_DATA[m2TargetIndex];
+      const word = m2CurrentSpelling.join('').toLowerCase();
+
+      if (word === target.english) {
+        playSoundEffect('correct');
+        speakText(target.english);
+        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-sage font-bold">✨ Tepat! "${target.english.toUpperCase()}" terpasang di pin #${target.pin}!</span>`;
+
+        if (currentRole === 'student' && myStudentId && currentRoomCode) {
+          const scoreRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}/score`);
+          const snap = await get(scoreRef);
+          await set(scoreRef, (snap.val() || 0) + 10);
+        }
+      } else {
+        playSoundEffect('wrong');
+        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-coral font-bold">❌ Ejaan belum tepat. Tekan Clear dan coba lagi!</span>`;
+      }
+    }
+
+    function toggleWordBankHint() {
+      showWordBankHint = !showWordBankHint;
+      document.getElementById('wordbank-hint-box').classList.toggle('hidden', !showWordBankHint);
+      playSoundEffect('click');
+    }
+
+    /* ==========================================================================
+       9. EXIT TICKET & ASSESSMENT RECAP (RPP PERTEMUAN 15)
+       ========================================================================== */
+    async function submitExitTicket(emoji) {
+      playSoundEffect('correct');
+      document.getElementById('exit-ticket-submitted-msg').classList.remove('hidden');
+
+      if (currentRole === 'student' && myStudentId && currentRoomCode) {
+        await update(ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`), {
+          exitTicket: emoji,
+          showAndTell: true
+        });
+      }
+    }
+
+    async function loadAssessmentRecap() {
+      showScreen('screen-assessment-recap');
+      const tableBody = document.getElementById('recap-table-body');
+      
+      const snap = await get(ref(db, `rooms/${currentRoomCode}/players`));
+      const players = snap.val() || {};
+      const list = Object.values(players);
+
+      if (list.length === 0) {
+        tableBody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-400 italic">Belum ada data nilai murid.</td></tr>`;
+        return;
+      }
+
+      tableBody.innerHTML = list.map((p, idx) => {
+        const score = p.score || 0;
+        const labelsCorrect = Math.min(7, Math.floor(score / 10));
+        let readiness = "Belum Siap";
+        if (labelsCorrect >= 6) readiness = "Sangat Siap";
+        else if (labelsCorrect >= 4) readiness = "Siap";
+
+        return `
+          <tr class="hover:bg-sand/30">
+            <td class="p-3 font-mono font-bold text-stone-500">${idx + 1}</td>
+            <td class="p-3 font-semibold text-ink flex items-center gap-2">
+              <span>${p.avatar || '🦊'}</span>
+              <span>${p.name}</span>
+            </td>
+            <td class="p-3 text-center font-bold text-sage">✓ (Tepat)</td>
+            <td class="p-3 text-center font-mono font-bold text-coral">${labelsCorrect} / 7</td>
+            <td class="p-3 text-center">
+              <span class="px-2.5 py-1 rounded-full text-xs font-bold ${readiness === 'Sangat Siap' ? 'bg-sage-light text-sage border border-sage/30' : (readiness === 'Siap' ? 'bg-mustard-light text-mustard-shadow border border-mustard/30' : 'bg-coral-light text-coral border border-coral/30')}">
+                ${readiness}
+              </span>
+            </td>
+            <td class="p-3 text-center text-xs font-bold text-stone-600">${p.showAndTell ? '✓ Selesai' : 'Perlu Bantuan'}</td>
+            <td class="p-3 text-center text-lg">${p.exitTicket || '—'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function exportAssessmentCSV() {
+      const snap = await get(ref(db, `rooms/${currentRoomCode}/players`));
+      const players = snap.val() || {};
+      
+      let csvContent = "data:text/csv;charset=utf-8,No,Nama Murid,18.1 Tepat,18.2 Label Score,Kesiapan Belajar,Show and Tell,Exit Ticket\n";
+      Object.values(players).forEach((p, idx) => {
+        const labelsCorrect = Math.min(7, Math.floor((p.score || 0) / 10));
+        let readiness = labelsCorrect >= 6 ? "Sangat Siap" : (labelsCorrect >= 4 ? "Siap" : "Belum Siap");
+        csvContent += `${idx + 1},"${p.name}",Tepat,${labelsCorrect}/7,${readiness},${p.showAndTell ? 'Selesai' : 'Perlu Bantuan'},${p.exitTicket || '-'}\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `Rekap_RPP_Pertemuan_15_${currentRoomCode}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    /* ==========================================================================
+       10. UTILITY FUNCTIONS
+       ========================================================================== */
+    function copyStudentJoinLink() {
+      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${currentRoomCode}`;
+      navigator.clipboard.writeText(joinUrl);
+      playSoundEffect('click');
+      alert(`Link tersalin: ${joinUrl}`);
+    }
+
+    function openStudentSimTab() {
+      const joinUrl = `${window.location.origin}${window.location.pathname}?room=${currentRoomCode}`;
+      window.open(joinUrl, '_blank');
+    }
+
+    function leaveCurrentRoom() {
+      currentRoomCode = null;
+      myStudentId = null;
+      document.getElementById('header-room-info').classList.add('hidden');
+      document.getElementById('exit-room-btn').classList.add('hidden');
+      showScreen('screen-role-select');
+    }
+
+    // Expose functions globally to window
+    window.showRoleSelection = showRoleSelection;
+    window.showStudentJoinForm = showStudentJoinForm;
+    window.setupTeacherHost = setupTeacherHost;
+    window.submitStudentJoin = submitStudentJoin;
+    window.teacherStartGame = teacherStartGame;
+    window.teacherNextQuestion = teacherNextQuestion;
+    window.teacherFinishSession = teacherFinishSession;
+    window.replayCurrentVoicePrompt = replayCurrentVoicePrompt;
+    window.toggleWordBankHint = toggleWordBankHint;
+    window.m2Backspace = m2Backspace;
+    window.m2Clear = m2Clear;
+    window.submitExitTicket = submitExitTicket;
+    window.exportAssessmentCSV = exportAssessmentCSV;
+    window.copyStudentJoinLink = copyStudentJoinLink;
+    window.openStudentSimTab = openStudentSimTab;
+    window.leaveCurrentRoom = leaveCurrentRoom;
+    window.toggleAudio = toggleAudio;
+    window.handleBodyPartTouch = handleBodyPartTouch;
+
+    // Check query param on load
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const urlRoom = urlParams.get('room');
-
-      if (urlRoom) {
-        showStudentJoinScreen();
-      } else {
-        showView('view-role-hub');
+      if (urlParams.has('room')) {
+        showStudentJoinForm();
       }
     };
   </script>
