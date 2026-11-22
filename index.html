@@ -350,7 +350,7 @@
       </div>
     </section>
 
-    <!-- 2. TEACHER DASHBOARD (LOBBY & LIVE MONITORING) -->
+    <!-- 2. TEACHER DASHBOARD (ROOM SETTINGS, LOBBY & LIVE MONITORING) -->
     <section id="screen-teacher-dashboard" class="w-full max-w-6xl mx-auto flex flex-col gap-6 hidden">
       
       <!-- Top Room Information & Controls Banner -->
@@ -375,7 +375,7 @@
               <span>🖥️</span> Tab Simulasi Siswa
             </button>
             <button onclick="toggleQROverlay()" class="tactile-btn btn-sand px-3 py-1.5 text-xs gap-1.5">
-              <span>📱</span> Tampilkan/Sembunyikan QR Code
+              <span>📱</span> QR Code
             </button>
           </div>
         </div>
@@ -388,22 +388,80 @@
 
       </div>
 
-      <!-- Mode Selector (Lobby Only) -->
-      <div id="teacher-start-panel" class="tactile-card p-5 bg-white flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div>
-          <h3 class="font-heading text-lg font-700 text-ink">Mulai Sesi Pembelajaran Siswa</h3>
-          <p class="text-xs text-stone-500 font-semibold mt-0.5">
-            Setiap siswa akan mengerjakan 7 soal secara mandiri di HP masing-masing setelah game dimulai.
-          </p>
+      <!-- ROOM SETTINGS & START PANEL (LOBBY ONLY) -->
+      <div id="teacher-start-panel" class="tactile-card p-5 bg-white flex flex-col gap-4">
+        <div class="border-b border-sandborder pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="font-heading text-lg font-700 text-ink">⚙️ Pengaturan Room Game (Sebelum Mulai)</h3>
+            <p class="text-xs text-stone-500 font-semibold">
+              Atur mode permainan, batas waktu per soal, dan opsi acak soal sebelum menekan tombol mulai.
+            </p>
+          </div>
+          <span class="text-xs font-mono font-bold bg-sand px-2.5 py-1 rounded-lg text-stone-600">Total: 7 Soal</span>
         </div>
-        <div class="flex flex-wrap gap-2 w-full sm:w-auto">
-          <button onclick="teacherStartGame(1)" class="tactile-btn btn-coral px-4 py-3 text-sm flex-1 sm:flex-initial gap-2">
-            <span>▶</span> Start Mode 1 (Listen & Touch)
-          </button>
-          <button onclick="teacherStartGame(2)" class="tactile-btn btn-sage px-4 py-3 text-sm flex-1 sm:flex-initial gap-2">
-            <span>▶</span> Start Mode 2 (Spelling Label)
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Setting 1: Game Mode -->
+          <div class="bg-sand/40 p-3 rounded-xl border border-sandborder">
+            <label class="block text-xs font-bold text-stone-700 mb-1.5">1. Mode Permainan</label>
+            <select id="setting-game-mode" class="w-full p-2.5 rounded-xl border-2 border-sandborder bg-white text-xs font-bold text-ink outline-none focus:border-coral">
+              <option value="1">Mode 1: Listen & Touch (Ketuk Gambar)</option>
+              <option value="2">Mode 2: Spelling Label (Susun Huruf)</option>
+            </select>
+          </div>
+
+          <!-- Setting 2: Time Limit per Question -->
+          <div class="bg-sand/40 p-3 rounded-xl border border-sandborder">
+            <label class="block text-xs font-bold text-stone-700 mb-1.5">2. Waktu Tiap Soal</label>
+            <select id="setting-time-limit" class="w-full p-2.5 rounded-xl border-2 border-sandborder bg-white text-xs font-bold text-ink outline-none focus:border-coral">
+              <option value="0">Tanpa Batas Waktu (Bebas)</option>
+              <option value="10">10 Detik / Soal (Cepat)</option>
+              <option value="15" selected>15 Detik / Soal (Normal)</option>
+              <option value="20">20 Detik / Soal (Santai)</option>
+              <option value="30">30 Detik / Soal (Menulis)</option>
+            </select>
+          </div>
+
+          <!-- Setting 3: Shuffle Questions -->
+          <div class="bg-sand/40 p-3 rounded-xl border border-sandborder">
+            <label class="block text-xs font-bold text-stone-700 mb-1.5">3. Urutan Soal Siswa</label>
+            <select id="setting-shuffle" class="w-full p-2.5 rounded-xl border-2 border-sandborder bg-white text-xs font-bold text-ink outline-none focus:border-coral">
+              <option value="true" selected>Acak Tiap Siswa (Anti Nyontek)</option>
+              <option value="false">Berurutan (Pin 1 s/d 7)</option>
+            </select>
+          </div>
+
+          <!-- Setting 4: Word Bank Hint (Mode 2) -->
+          <div class="bg-sand/40 p-3 rounded-xl border border-sandborder">
+            <label class="block text-xs font-bold text-stone-700 mb-1.5">4. Bantuan Word Bank (Mode 2)</label>
+            <select id="setting-allow-hint" class="w-full p-2.5 rounded-xl border-2 border-sandborder bg-white text-xs font-bold text-ink outline-none focus:border-coral">
+              <option value="true" selected>Izinkan Tombol Bantuan</option>
+              <option value="false">Sembunyikan (Ujian Mandiri)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button onclick="teacherStartGame()" class="tactile-btn btn-sage w-full sm:w-auto px-8 py-3.5 text-base gap-2">
+            <span>🚀</span> Mulai Game Sekarang!
           </button>
         </div>
+      </div>
+
+      <!-- Active Game Info Banner (Shown while PLAYING) -->
+      <div id="teacher-active-banner" class="hidden tactile-card p-4 bg-sage-light/60 border-sage/40 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl animate-pulse">📡</span>
+          <div>
+            <h3 class="font-heading text-base font-700 text-sage">Sesi Sedang Berlangsung!</h3>
+            <p id="teacher-active-rules-text" class="text-xs font-semibold text-stone-600">
+              Mode 1 • Timer: 15 detik/soal • Soal Acak
+            </p>
+          </div>
+        </div>
+        <button onclick="teacherFinishSession()" class="tactile-btn btn-coral px-5 py-2.5 text-xs gap-1.5">
+          <span>⏹</span> Akhiri Sesi & Buka Rekap Nilai
+        </button>
       </div>
 
       <!-- LIVE MONITORING DASHBOARD (LEADERBOARD & LIVE STUDENT REPORT) -->
@@ -414,20 +472,14 @@
           <div>
             <div class="flex items-center justify-between pb-3 border-b border-sandborder mb-3">
               <h3 class="font-heading text-lg font-700 text-ink">
-                🏆 Live Leaderboard
+                🏆 Papan Skor Realtime
               </h3>
-              <span class="text-xs font-mono font-bold text-sage animate-pulse">● Live Rank</span>
+              <span class="text-xs font-mono font-bold text-sage animate-pulse">● Live</span>
             </div>
             
-            <div id="teacher-live-leaderboard" class="space-y-2 max-h-96 overflow-y-auto pr-1">
+            <div id="teacher-live-leaderboard" class="space-y-2 max-h-[420px] overflow-y-auto pr-1">
               <p class="text-xs text-stone-400 italic text-center py-6">Peringkat dan skor siswa akan terupdate di sini secara real-time.</p>
             </div>
-          </div>
-
-          <div class="pt-4 border-t border-sandborder mt-4 flex flex-col gap-2">
-            <button onclick="teacherFinishSession()" class="tactile-btn btn-coral w-full py-2.5 text-xs gap-1.5">
-              <span>⏹</span> Akhiri Sesi & Buka Rekap Asesmen Lengkap
-            </button>
           </div>
         </div>
 
@@ -437,24 +489,28 @@
             <div class="flex items-center justify-between pb-3 border-b border-sandborder mb-3">
               <div>
                 <h3 class="font-heading text-lg font-700 text-ink">
-                  📊 Live Student Report (<span id="roster-count-num" class="text-sage">0</span> Siswa)
+                  📊 Laporan Pengerjaan Siswa (<span id="roster-count-num" class="text-sage">0</span> Anak)
                 </h3>
-                <p class="text-[11px] text-stone-500 font-semibold">Progres pengerjaan mandiri tiap siswa (Soal 1–7)</p>
+                <p class="text-[11px] text-stone-500 font-semibold">Pantau progres & status jawaban tiap soal secara langsung</p>
               </div>
               <button onclick="exportAssessmentCSV()" class="tactile-btn btn-sand px-3 py-1.5 text-xs gap-1">
                 <span>📥</span> Export CSV
               </button>
             </div>
 
-            <div id="teacher-student-report-matrix" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-96 overflow-y-auto pr-1">
+            <div id="teacher-student-report-matrix" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[420px] overflow-y-auto pr-1">
               <p class="text-xs text-stone-400 italic col-span-full text-center py-8">
                 Belum ada siswa bergabung. Bagikan kode room atau QR code di atas!
               </p>
             </div>
           </div>
 
-          <div class="pt-3 border-t border-sandborder mt-4 text-xs font-semibold text-stone-500 flex justify-between items-center">
-            <span>* Selesai = Siswa sudah tuntas 7 soal & Exit Ticket</span>
+          <div class="pt-3 border-t border-sandborder mt-4 text-xs font-semibold text-stone-500 flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-sage inline-block"></span> Benar</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-coral inline-block"></span> Salah/Habis</span>
+              <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-mustard inline-block"></span> Dikerjakan</span>
+            </div>
             <span class="font-mono text-sage font-bold">RPP 15 Compliant</span>
           </div>
         </div>
@@ -471,13 +527,13 @@
         
         <div>
           <h2 id="student-my-name" class="font-heading text-2xl font-700 text-ink">Nama Siswa</h2>
-          <p class="text-xs font-mono font-bold text-sage mt-0.5">Status: Ready in Class</p>
+          <p class="text-xs font-mono font-bold text-sage mt-0.5">Status: Sudah Masuk Kelas</p>
         </div>
 
         <div class="w-full bg-sand p-4 rounded-2xl border-2 border-dashed border-sandborder">
-          <span class="text-xs font-bold text-stone-500 uppercase block mb-1">Waiting for Teacher</span>
+          <span class="text-xs font-bold text-stone-500 uppercase block mb-1">Menunggu Guru Memulai</span>
           <p class="text-sm font-semibold text-stone-700">
-            Game akan segera dimulai. Kamu akan mengerjakan 7 soal bagian tubuh di HP ini secara mandiri!
+            Bersiaplah! Setelah guru memulai game, kamu akan mengerjakan 7 soal dan otomatis lanjut ke soal berikutnya setelah menjawab.
           </p>
         </div>
 
@@ -499,12 +555,18 @@
         </div>
 
         <div class="flex items-center gap-2">
+          <!-- Timer Pill -->
+          <div id="student-timer-pill" class="hidden bg-mustard-light text-mustard-shadow border-2 border-mustard px-3 py-1.5 rounded-xl font-mono font-bold text-sm flex items-center gap-1">
+            <span>⏱️</span>
+            <span id="student-timer-val">15</span>s
+          </div>
+
           <button id="voice-replay-btn" onclick="replayCurrentVoicePrompt()" class="tactile-btn btn-mustard p-2.5 rounded-full" title="Replay Voice">
             🔊
           </button>
           
           <span class="bg-sand text-stone-700 text-xs font-mono font-bold px-3 py-2 rounded-xl border border-sandborder">
-            Question <span id="gameplay-q-num" class="text-coral">1</span>/7
+            Soal <span id="gameplay-q-num" class="text-coral">1</span>/7
           </span>
         </div>
       </div>
@@ -587,10 +649,13 @@
     <section id="screen-exit-ticket" class="w-full max-w-lg mx-auto flex flex-col gap-4 hidden">
       
       <div class="tactile-card p-5 bg-white text-center flex flex-col items-center gap-3">
-        <span class="text-3xl">🗣️</span>
-        <h2 class="font-heading text-xl font-700 text-ink">Show & Tell Pair Practice</h2>
+        <span class="text-3xl">🎉</span>
+        <h2 class="font-heading text-xl font-700 text-ink">Semua Soal Selesai!</h2>
+        <div class="bg-sand px-4 py-2 rounded-xl border border-sandborder font-mono font-bold text-sm">
+          Skor Akhir Kamu: <span id="student-final-score" class="text-coral text-lg">0</span> Poin
+        </div>
         <p class="text-xs text-stone-600 leading-relaxed">
-          Tunjukkan layar HP ini ke teman di sebelahmu, tunjuk hidung atau bagian tubuhmu, lalu katakan:
+          <b>Show & Tell Pair Practice:</b> Tunjukkan layar HP ini ke teman di sebelahmu, tunjuk bagian tubuhmu, lalu katakan:
         </p>
         <div class="bg-sage-light border-2 border-sage/40 p-3 rounded-xl text-sage font-heading font-700 text-lg">
           "This is my nose!"
@@ -650,8 +715,8 @@
               <tr>
                 <th class="p-3">No</th>
                 <th class="p-3">Nama Murid</th>
-                <th class="p-3 text-center">Tepatan (18.1)</th>
-                <th class="p-3 text-center">Label Tulisan (18.2)</th>
+                <th class="p-3 text-center">Skor Total</th>
+                <th class="p-3 text-center">Jawaban Benar</th>
                 <th class="p-3 text-center">Kesiapan Belajar</th>
                 <th class="p-3 text-center">Show & Tell</th>
                 <th class="p-3 text-center">Exit Ticket</th>
@@ -675,7 +740,7 @@
   <!-- FIREBASE REALTIME DATABASE & APPLICATION ENGINE -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getDatabase, ref, set, get, update, onValue } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
+    import { getDatabase, ref, set, get, update, onValue, off } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-database.js";
 
     /* ==========================================================================
        1. FIREBASE INITIALIZATION & DATA STRUCTURES
@@ -713,12 +778,24 @@
     let audioEnabled = true;
 
     // Student Self-Paced State
-    let studentSelfIndex = 0; // Independent Question index (0 to 6)
+    let studentQuestions = [];
+    let studentSelfIndex = 0;
+    let studentScore = 0;
+    let studentCorrectCount = 0;
+    let studentAnswerHistory = []; // Array of { word, correct }
+    let hasStartedPlaying = false;
     let isTransitioning = false;
 
+    // Timer State
+    let questionTimerInterval = null;
+    let timeRemaining = 0;
+
     let gameState = {
-      status: 'LOBBY', // 'LOBBY', 'PLAYING', 'FINISHED'
-      mode: 1
+      status: 'LOBBY',
+      mode: 1,
+      timeLimit: 15,
+      shuffle: true,
+      allowHint: true
     };
 
     let m2CurrentSpelling = [];
@@ -844,7 +921,7 @@
     }
 
     /* ==========================================================================
-       4. TEACHER HOST SETUP & LIVE REPORT DASHBOARD
+       4. TEACHER HOST SETUP, ROOM SETTINGS & LIVE REPORT DASHBOARD
        ========================================================================== */
     async function setupTeacherHost() {
       currentRole = 'host';
@@ -859,24 +936,30 @@
       document.getElementById('qrcode-container').innerHTML = '';
       new QRCode(document.getElementById('qrcode-container'), {
         text: joinUrl,
-        width: 120,
-        height: 120
+        width: 110,
+        height: 110
       });
 
       const roomRef = ref(db, `rooms/${currentRoomCode}`);
       await set(roomRef, {
         status: 'LOBBY',
         mode: 1,
+        timeLimit: 15,
+        shuffle: true,
+        allowHint: true,
         createdAt: Date.now()
       });
 
-      // Listen to Players & Room State in Real Time
+      // Listen to Room & Players in Real Time
       onValue(ref(db, `rooms/${currentRoomCode}`), (snapshot) => {
         const roomData = snapshot.val();
         if (!roomData) return;
 
         gameState.status = roomData.status || 'LOBBY';
         gameState.mode = roomData.mode || 1;
+        gameState.timeLimit = roomData.timeLimit !== undefined ? roomData.timeLimit : 15;
+        gameState.shuffle = roomData.shuffle !== undefined ? roomData.shuffle : true;
+        gameState.allowHint = roomData.allowHint !== undefined ? roomData.allowHint : true;
 
         const players = roomData.players || {};
         renderTeacherLiveReport(players);
@@ -898,17 +981,31 @@
 
       document.getElementById('roster-count-num').innerText = playerList.length;
 
-      // Update badge
+      // Update UI state based on Room Status
       const badge = document.getElementById('teacher-status-badge');
       const startPanel = document.getElementById('teacher-start-panel');
+      const activeBanner = document.getElementById('teacher-active-banner');
+
       if (gameState.status === 'PLAYING') {
-        badge.innerText = `SESSION LIVE (${gameState.mode === 1 ? 'Touch' : 'Spelling'})`;
+        badge.innerText = `LIVE • MODE ${gameState.mode}`;
         badge.className = "bg-sage-light text-sage text-xs font-bold px-3 py-1 rounded-full border border-sage/40";
         startPanel.classList.add('hidden');
+        activeBanner.classList.remove('hidden');
+
+        const timerText = gameState.timeLimit > 0 ? `${gameState.timeLimit} detik/soal` : 'Bebas Waktu';
+        const orderText = gameState.shuffle ? 'Soal Acak' : 'Soal Berurutan';
+        document.getElementById('teacher-active-rules-text').innerText =
+          `Mode ${gameState.mode} (${gameState.mode === 1 ? 'Listen & Touch' : 'Spelling'}) • Timer: ${timerText} • ${orderText}`;
+      } else if (gameState.status === 'FINISHED') {
+        badge.innerText = "SESSION FINISHED";
+        badge.className = "bg-coral-light text-coral text-xs font-bold px-3 py-1 rounded-full border border-coral/40";
+        startPanel.classList.add('hidden');
+        activeBanner.classList.add('hidden');
       } else {
         badge.innerText = "LOBBY READY";
         badge.className = "bg-mustard-light text-mustard-shadow text-xs font-bold px-3 py-1 rounded-full border border-mustard/40";
         startPanel.classList.remove('hidden');
+        activeBanner.classList.add('hidden');
       }
 
       if (playerList.length === 0) {
@@ -917,48 +1014,77 @@
         return;
       }
 
-      // Leaderboard Render (Sorted by score desc)
-      const sorted = [...playerList].sort((a, b) => (b[1].score || 0) - (a[1].score || 0));
-      leaderboardBox.innerHTML = sorted.map(([id, p], idx) => `
-        <div class="flex items-center justify-between p-2.5 rounded-xl bg-sand/30 border border-sandborder text-xs">
-          <div class="flex items-center gap-2">
-            <span class="font-bold text-stone-500 font-mono w-4">${idx + 1}.</span>
-            <span class="text-lg">${p.avatar || '🦊'}</span>
-            <span class="font-bold text-ink">${p.name}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="font-mono text-[11px] font-bold text-stone-500">${p.progress || 0}/7</span>
-            <span class="font-mono font-bold text-coral bg-coral-light px-2 py-0.5 rounded-md border border-coral/30">${p.score || 0} pts</span>
-          </div>
-        </div>
-      `).join('');
+      // 1. Live Leaderboard Render (Sorted by score desc, then correctCount desc)
+      const sorted = [...playerList].sort((a, b) => {
+        const scoreDiff = (b[1].score || 0) - (a[1].score || 0);
+        if (scoreDiff !== 0) return scoreDiff;
+        return (b[1].correctCount || 0) - (a[1].correctCount || 0);
+      });
 
-      // Student Report Matrix Render
+      leaderboardBox.innerHTML = sorted.map(([id, p], idx) => {
+        let medal = `${idx + 1}.`;
+        if (idx === 0) medal = '🥇';
+        else if (idx === 1) medal = '🥈';
+        else if (idx === 2) medal = '🥉';
+
+        return `
+          <div class="flex items-center justify-between p-2.5 rounded-xl ${idx === 0 ? 'bg-mustard-light/60 border-mustard' : 'bg-sand/30 border-sandborder'} border text-xs">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="font-bold text-stone-600 font-mono w-5 text-center">${medal}</span>
+              <span class="text-lg">${p.avatar || '🦊'}</span>
+              <span class="font-bold text-ink truncate">${p.name}</span>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="font-mono text-[11px] font-bold text-stone-500">${p.progress || 0}/7</span>
+              <span class="font-mono font-bold text-coral bg-white px-2 py-0.5 rounded-md border border-coral/30">${p.score || 0} pts</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // 2. Live Student Report Matrix Render (Question-by-Question Boxes)
       matrixBox.innerHTML = playerList.map(([id, p]) => {
         const progress = p.progress || 0;
-        const pct = Math.round((progress / 7) * 100);
         const isFinished = p.completed || progress >= 7;
+        const history = p.history || [];
+
+        // Build 7 question status boxes
+        let qBoxesHtml = '';
+        for (let i = 0; i < 7; i++) {
+          const item = history[i];
+          if (item) {
+            if (item.correct) {
+              qBoxesHtml += `<div title="Soal ${i + 1} (${item.word}): Benar" class="h-6 rounded-md bg-sage text-white font-mono text-[10px] font-bold flex items-center justify-center">✓</div>`;
+            } else {
+              qBoxesHtml += `<div title="Soal ${i + 1} (${item.word}): Salah" class="h-6 rounded-md bg-coral text-white font-mono text-[10px] font-bold flex items-center justify-center">✕</div>`;
+            }
+          } else if (i === progress && gameState.status === 'PLAYING' && !isFinished) {
+            qBoxesHtml += `<div title="Sedang mengerjakan soal ${i + 1}" class="h-6 rounded-md bg-mustard text-ink font-mono text-[10px] font-bold flex items-center justify-center animate-pulse">${i + 1}</div>`;
+          } else {
+            qBoxesHtml += `<div class="h-6 rounded-md bg-sand border border-sandborder text-stone-400 font-mono text-[10px] font-bold flex items-center justify-center">${i + 1}</div>`;
+          }
+        }
 
         return `
           <div class="p-3 rounded-xl border-2 ${isFinished ? 'bg-sage-light/30 border-sage/40' : 'bg-white border-sandborder'} flex flex-col gap-2">
             <div class="flex items-center justify-between">
-              <div class="flex items-center gap-2">
+              <div class="flex items-center gap-2 min-w-0">
                 <span class="text-xl">${p.avatar || '🦊'}</span>
-                <span class="font-bold text-xs text-ink truncate max-w-[110px]">${p.name}</span>
+                <span class="font-bold text-xs text-ink truncate">${p.name}</span>
               </div>
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${isFinished ? 'bg-sage text-white' : 'bg-sand text-stone-600'}">
-                ${isFinished ? '✓ Selesai' : `Soal ${progress + 1}/7`}
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${isFinished ? 'bg-sage text-white' : (gameState.status === 'PLAYING' ? 'bg-mustard-light text-mustard-shadow' : 'bg-sand text-stone-600')}">
+                ${isFinished ? '✓ Selesai' : (gameState.status === 'PLAYING' ? `Soal ${progress + 1}/7` : 'Menunggu')}
               </span>
             </div>
 
-            <!-- Progress bar -->
-            <div class="w-full bg-sand rounded-full h-2 overflow-hidden border border-sandborder">
-              <div class="bg-sage h-2 rounded-full transition-all duration-300" style="width: ${pct}%"></div>
+            <!-- 7-Question Live Status Grid -->
+            <div class="grid grid-cols-7 gap-1 my-0.5">
+              ${qBoxesHtml}
             </div>
 
             <div class="flex items-center justify-between text-[11px] font-mono text-stone-500 pt-1 border-t border-sandborder/50">
-              <span>Score: <b class="text-coral">${p.score || 0}</b></span>
-              <span>Acc: <b class="text-sage">${p.correctCount || 0}/${progress}</b></span>
+              <span>Skor: <b class="text-coral">${p.score || 0}</b></span>
+              <span>Benar: <b class="text-sage">${p.correctCount || 0}/${progress}</b></span>
               <span>Refleksi: <b>${p.exitTicket || '—'}</b></span>
             </div>
           </div>
@@ -966,14 +1092,22 @@
       }).join('');
     }
 
-    async function teacherStartGame(modeNum) {
+    async function teacherStartGame() {
       if (!currentRoomCode) return;
-      gameState.status = 'PLAYING';
-      gameState.mode = modeNum;
+
+      const selectedMode = parseInt(document.getElementById('setting-game-mode').value, 10);
+      const selectedTimeLimit = parseInt(document.getElementById('setting-time-limit').value, 10);
+      const selectedShuffle = document.getElementById('setting-shuffle').value === 'true';
+      const selectedAllowHint = document.getElementById('setting-allow-hint').value === 'true';
+
+      playSoundEffect('correct');
 
       await update(ref(db, `rooms/${currentRoomCode}`), {
         status: 'PLAYING',
-        mode: modeNum
+        mode: selectedMode,
+        timeLimit: selectedTimeLimit,
+        shuffle: selectedShuffle,
+        allowHint: selectedAllowHint
       });
     }
 
@@ -986,7 +1120,7 @@
     }
 
     /* ==========================================================================
-       5. STUDENT JOIN & INDEPENDENT SELF-PACED SYNC
+       5. STUDENT JOIN & INDEPENDENT SELF-PACED SYNC (BUG-FREE LISTENER)
        ========================================================================== */
     async function submitStudentJoin() {
       const roomInput = document.getElementById('join-room-input').value.trim().toUpperCase();
@@ -1011,6 +1145,13 @@
       currentRoomCode = roomInput;
       myStudentId = 'std_' + Math.random().toString(36).substring(2, 9);
 
+      // Reset local student state
+      studentSelfIndex = 0;
+      studentScore = 0;
+      studentCorrectCount = 0;
+      studentAnswerHistory = [];
+      hasStartedPlaying = false;
+
       document.getElementById('header-room-code').innerText = currentRoomCode;
       document.getElementById('header-room-info').classList.remove('hidden');
       document.getElementById('exit-room-btn').classList.remove('hidden');
@@ -1021,6 +1162,7 @@
         score: 0,
         correctCount: 0,
         progress: 0,
+        history: [],
         completed: false,
         joinedAt: Date.now()
       });
@@ -1028,23 +1170,38 @@
       document.getElementById('student-my-avatar').innerText = selectedAvatar;
       document.getElementById('student-my-name').innerText = nameInput;
 
-      // Listen to Room Status for initial trigger
-      onValue(ref(db, `rooms/${currentRoomCode}`), (snapshot) => {
-        const roomData = snapshot.val();
-        if (!roomData) return;
+      // Listen ONLY to Room Status & Settings (NOT players list, so other students' updates won't reset this screen!)
+      onValue(ref(db, `rooms/${currentRoomCode}/status`), async (statusSnap) => {
+        const status = statusSnap.val();
+        if (!status) return;
 
-        gameState.status = roomData.status || 'LOBBY';
-        gameState.mode = roomData.mode || 1;
+        gameState.status = status;
 
-        if (gameState.status === 'LOBBY') {
+        if (status === 'LOBBY') {
+          hasStartedPlaying = false;
+          stopQuestionTimer();
           showScreen('screen-student-waiting');
-        } else if (gameState.status === 'PLAYING') {
-          if (studentSelfIndex >= 7) {
-            showScreen('screen-exit-ticket');
-          } else {
-            renderStudentSelfPacedQuestion();
+        } else if (status === 'PLAYING' && !hasStartedPlaying) {
+          // Fetch room settings once when game starts
+          const fullRoomSnap = await get(ref(db, `rooms/${currentRoomCode}`));
+          const rData = fullRoomSnap.val() || {};
+          gameState.mode = rData.mode || 1;
+          gameState.timeLimit = rData.timeLimit !== undefined ? rData.timeLimit : 15;
+          gameState.shuffle = rData.shuffle !== undefined ? rData.shuffle : true;
+          gameState.allowHint = rData.allowHint !== undefined ? rData.allowHint : true;
+
+          // Prepare question queue (shuffled or sequential)
+          studentQuestions = [...VOCAB_DATA];
+          if (gameState.shuffle) {
+            studentQuestions.sort(() => Math.random() - 0.5);
           }
-        } else if (gameState.status === 'FINISHED') {
+
+          hasStartedPlaying = true;
+          studentSelfIndex = 0;
+          renderStudentSelfPacedQuestion();
+        } else if (status === 'FINISHED') {
+          stopQuestionTimer();
+          document.getElementById('student-final-score').innerText = studentScore;
           showScreen('screen-exit-ticket');
         }
       });
@@ -1053,12 +1210,72 @@
     }
 
     /* ==========================================================================
-       6. STUDENT SELF-PACED GAMEPLAY RENDER & CONTROLLER
+       6. STUDENT SELF-PACED GAMEPLAY RENDER & TIMER CONTROLLER
        ========================================================================== */
+    function stopQuestionTimer() {
+      if (questionTimerInterval) {
+        clearInterval(questionTimerInterval);
+        questionTimerInterval = null;
+      }
+    }
+
+    function startQuestionTimer() {
+      stopQuestionTimer();
+      const timerPill = document.getElementById('student-timer-pill');
+      const timerVal = document.getElementById('student-timer-val');
+
+      if (!gameState.timeLimit || gameState.timeLimit <= 0) {
+        timerPill.classList.add('hidden');
+        return;
+      }
+
+      timeRemaining = gameState.timeLimit;
+      timerVal.innerText = timeRemaining;
+      timerPill.classList.remove('hidden');
+      timerPill.className = "bg-mustard-light text-mustard-shadow border-2 border-mustard px-3 py-1.5 rounded-xl font-mono font-bold text-sm flex items-center gap-1";
+
+      questionTimerInterval = setInterval(() => {
+        if (isTransitioning) return;
+        timeRemaining--;
+        timerVal.innerText = Math.max(0, timeRemaining);
+
+        if (timeRemaining <= 5) {
+          timerPill.className = "bg-coral-light text-coral border-2 border-coral px-3 py-1.5 rounded-xl font-mono font-bold text-sm flex items-center gap-1 animate-pulse";
+        }
+
+        if (timeRemaining <= 0) {
+          stopQuestionTimer();
+          handleQuestionTimeout();
+        }
+      }, 1000);
+    }
+
+    async function handleQuestionTimeout() {
+      if (isTransitioning) return;
+      isTransitioning = true;
+
+      const target = studentQuestions[studentSelfIndex];
+      if (!target) return;
+
+      playSoundEffect('wrong');
+
+      if (gameState.mode === 1) {
+        const fb = document.getElementById('m1-feedback-box');
+        fb.className = "min-h-[90px] bg-coral-light p-3 rounded-2xl border-2 border-coral flex flex-col items-center justify-center text-center";
+        fb.innerHTML = `<span class="text-xl mb-0.5">⏰ Waktu Habis!</span><p class="text-xs font-bold text-coral">Jawaban tepat: ${target.english}</p>`;
+      } else {
+        document.getElementById('m2-feedback-status').innerHTML = `<span class="text-coral font-bold text-sm">⏰ Waktu Habis! Jawaban: "${target.english.toUpperCase()}"</span>`;
+      }
+
+      await recordAndAdvanceQuestion(false, target.english);
+    }
+
     function renderStudentSelfPacedQuestion() {
-      if (studentSelfIndex >= VOCAB_DATA.length) {
-        // Complete all 7 questions
+      stopQuestionTimer();
+
+      if (studentSelfIndex >= studentQuestions.length) {
         markStudentCompleted();
+        document.getElementById('student-final-score').innerText = studentScore;
         showScreen('screen-exit-ticket');
         return;
       }
@@ -1067,7 +1284,7 @@
       isTransitioning = false;
       m2CurrentSpelling = [];
 
-      const target = VOCAB_DATA[studentSelfIndex];
+      const target = studentQuestions[studentSelfIndex];
       document.getElementById('gameplay-q-num').innerText = studentSelfIndex + 1;
       document.getElementById('gameplay-mode-tag').innerText = `Mode ${gameState.mode}: ${gameState.mode === 1 ? 'Listen & Touch' : 'Spelling Label'}`;
       document.getElementById('gameplay-prompt-title').innerText = `"${target.tpr}"`;
@@ -1092,22 +1309,33 @@
         document.getElementById('mode2-board').classList.remove('hidden');
         document.getElementById('svg-character-container-m2').innerHTML = createSVGCharacterMarkup('m2');
 
+        // Toggle Word Bank button visibility based on teacher setting
+        const wbBtn = document.getElementById('wordbank-toggle-btn');
+        if (gameState.allowHint) {
+          wbBtn.classList.remove('hidden');
+        } else {
+          wbBtn.classList.add('hidden');
+          document.getElementById('wordbank-hint-box').classList.add('hidden');
+        }
+
         document.getElementById('m2-target-pin-label').innerText = `Pin Target #${target.pin}`;
         highlightTargetHotspot(target.id, 'm2');
         renderM2Slots(target.english.length);
         renderM2Tiles(target.english);
         document.getElementById('m2-feedback-status').innerHTML = `<span class="text-stone-500">Susun huruf bahasa Inggris untuk Pin #${target.pin}!</span>`;
       }
+
+      startQuestionTimer();
     }
 
     function replayCurrentVoicePrompt() {
-      const target = VOCAB_DATA[studentSelfIndex];
+      const target = studentQuestions[studentSelfIndex];
       if (target) speakText(target.tpr);
       playSoundEffect('click');
     }
 
     /* ==========================================================================
-       7. SVG CHARACTER & TOUCH HANDLER (SELF-PACED ADVANCE)
+       7. SVG CHARACTER & TOUCH HANDLER (SELF-PACED AUTO-ADVANCE)
        ========================================================================== */
     function createSVGCharacterMarkup(modeSuffix) {
       const isHostClass = currentRole === 'host' ? 'host-view' : '';
@@ -1194,10 +1422,12 @@
       if (gameState.mode !== 1) return;
       if (isTransitioning) return;
 
-      const target = VOCAB_DATA[studentSelfIndex];
+      const target = studentQuestions[studentSelfIndex];
       if (!target) return;
 
       isTransitioning = true;
+      stopQuestionTimer();
+
       const isCorrect = (partId === target.id);
       const fb = document.getElementById('m1-feedback-box');
 
@@ -1205,22 +1435,14 @@
         playSoundEffect('correct');
         speakText(`${target.english}!`);
         fb.className = "min-h-[90px] bg-sage-light p-3 rounded-2xl border-2 border-sage flex flex-col items-center justify-center text-center animate-bounce";
-        fb.innerHTML = `<span class="text-2xl mb-0.5">🎉 Correct!</span><p class="text-xs font-bold text-sage">${target.english} (${target.indo})</p>`;
+        fb.innerHTML = `<span class="text-2xl mb-0.5">🎉 Benar!</span><p class="text-xs font-bold text-sage">${target.english} (${target.indo})</p>`;
       } else {
         playSoundEffect('wrong');
-        const wrongPart = VOCAB_DATA.find(v => v.id === partId);
         fb.className = "min-h-[90px] bg-coral-light p-3 rounded-2xl border-2 border-coral flex flex-col items-center justify-center text-center";
-        fb.innerHTML = `<span class="text-xl mb-0.5">❌ Try Again!</span><p class="text-xs font-bold text-coral">Jawaban tepat: ${target.english}</p>`;
+        fb.innerHTML = `<span class="text-xl mb-0.5">❌ Kurang Tepat!</span><p class="text-xs font-bold text-coral">Jawaban tepat: ${target.english}</p>`;
       }
 
-      // Sync progress to Firebase
-      await updateStudentAnswer(isCorrect);
-
-      // Auto-advance student to next question after 1.2s delay
-      setTimeout(() => {
-        studentSelfIndex++;
-        renderStudentSelfPacedQuestion();
-      }, 1200);
+      await recordAndAdvanceQuestion(isCorrect, target.english);
     }
 
     function highlightTargetHotspot(partId, modeSuffix) {
@@ -1230,7 +1452,7 @@
     }
 
     /* ==========================================================================
-       8. MODE 2 SPELLING HANDLERS (SELF-PACED ADVANCE)
+       8. MODE 2 SPELLING HANDLERS (SELF-PACED AUTO-ADVANCE)
        ========================================================================== */
     function renderM2Slots(length) {
       const container = document.getElementById('m2-letter-slots-container');
@@ -1266,7 +1488,7 @@
 
     function m2TileClick(char) {
       if (currentRole === 'host' || isTransitioning) return;
-      const target = VOCAB_DATA[studentSelfIndex];
+      const target = studentQuestions[studentSelfIndex];
       if (!target) return;
 
       if (m2CurrentSpelling.length < target.english.length) {
@@ -1285,7 +1507,7 @@
       if (m2CurrentSpelling.length > 0) {
         playSoundEffect('click');
         m2CurrentSpelling.pop();
-        renderM2Slots(VOCAB_DATA[studentSelfIndex].english.length);
+        renderM2Slots(studentQuestions[studentSelfIndex].english.length);
       }
     }
 
@@ -1293,14 +1515,16 @@
       if (currentRole === 'host' || isTransitioning) return;
       playSoundEffect('click');
       m2CurrentSpelling = [];
-      renderM2Slots(VOCAB_DATA[studentSelfIndex].english.length);
+      renderM2Slots(studentQuestions[studentSelfIndex].english.length);
     }
 
     async function validateM2Spelling() {
-      const target = VOCAB_DATA[studentSelfIndex];
+      const target = studentQuestions[studentSelfIndex];
       const word = m2CurrentSpelling.join('').toLowerCase();
       const isCorrect = (word === target.english);
+
       isTransitioning = true;
+      stopQuestionTimer();
 
       if (isCorrect) {
         playSoundEffect('correct');
@@ -1311,37 +1535,48 @@
         document.getElementById('m2-feedback-status').innerHTML = `<span class="text-coral font-bold text-sm">❌ Jawaban tepat: "${target.english.toUpperCase()}"</span>`;
       }
 
-      await updateStudentAnswer(isCorrect);
-
-      setTimeout(() => {
-        studentSelfIndex++;
-        renderStudentSelfPacedQuestion();
-      }, 1200);
+      await recordAndAdvanceQuestion(isCorrect, target.english);
     }
 
     function toggleWordBankHint() {
+      if (!gameState.allowHint) return;
       showWordBankHint = !showWordBankHint;
       document.getElementById('wordbank-hint-box').classList.toggle('hidden', !showWordBankHint);
       playSoundEffect('click');
     }
 
     /* ==========================================================================
-       9. FIREBASE STUDENT PROGRESS UPDATE
+       9. FIREBASE STUDENT PROGRESS UPDATE & AUTO-NEXT ENGINE
        ========================================================================== */
-    async function updateStudentAnswer(isCorrect) {
-      if (currentRole !== 'student' || !myStudentId || !currentRoomCode) return;
+    async function recordAndAdvanceQuestion(isCorrect, word) {
+      // Calculate points (Base 100 pts + speed bonus if timer active)
+      let earnedPoints = 0;
+      if (isCorrect) {
+        const speedBonus = (gameState.timeLimit > 0) ? Math.max(0, timeRemaining * 2) : 0;
+        earnedPoints = 100 + speedBonus;
+        studentCorrectCount++;
+      }
 
-      const pRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`);
-      const snap = await get(pRef);
-      const pData = snap.val() || {};
+      studentScore += earnedPoints;
+      studentAnswerHistory.push({ word, correct: isCorrect });
+      const nextProgress = studentSelfIndex + 1;
 
-      const newProgress = studentSelfIndex + 1;
-      await update(pRef, {
-        score: (pData.score || 0) + (isCorrect ? 10 : 0),
-        correctCount: (pData.correctCount || 0) + (isCorrect ? 1 : 0),
-        progress: newProgress,
-        completed: newProgress >= 7
-      });
+      if (currentRole === 'student' && myStudentId && currentRoomCode) {
+        const pRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`);
+        await update(pRef, {
+          score: studentScore,
+          correctCount: studentCorrectCount,
+          progress: nextProgress,
+          history: studentAnswerHistory,
+          completed: nextProgress >= studentQuestions.length
+        });
+      }
+
+      // Automatically move to the next question after 1.2s
+      setTimeout(() => {
+        studentSelfIndex = nextProgress;
+        renderStudentSelfPacedQuestion();
+      }, 1200);
     }
 
     async function markStudentCompleted() {
@@ -1349,7 +1584,7 @@
       const pRef = ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`);
       await update(pRef, {
         completed: true,
-        progress: 7
+        progress: studentQuestions.length
       });
     }
 
@@ -1374,7 +1609,7 @@
       
       const snap = await get(ref(db, `rooms/${currentRoomCode}/players`));
       const players = snap.val() || {};
-      const list = Object.values(players);
+      const list = Object.values(players).sort((a, b) => (b.score || 0) - (a.score || 0));
 
       if (list.length === 0) {
         tableBody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-stone-400 italic">Belum ada data nilai murid.</td></tr>`;
@@ -1395,7 +1630,7 @@
               <span>${p.avatar || '🦊'}</span>
               <span>${p.name}</span>
             </td>
-            <td class="p-3 text-center font-bold text-sage">✓ (Tepat)</td>
+            <td class="p-3 text-center font-mono font-bold text-ink">${p.score || 0} pts</td>
             <td class="p-3 text-center font-mono font-bold text-coral">${labelsCorrect} / 7</td>
             <td class="p-3 text-center">
               <span class="px-2.5 py-1 rounded-full text-xs font-bold ${readiness === 'Sangat Siap' ? 'bg-sage-light text-sage border border-sage/30' : (readiness === 'Siap' ? 'bg-mustard-light text-mustard-shadow border border-mustard/30' : 'bg-coral-light text-coral border border-coral/30')}">
@@ -1413,11 +1648,11 @@
       const snap = await get(ref(db, `rooms/${currentRoomCode}/players`));
       const players = snap.val() || {};
       
-      let csvContent = "data:text/csv;charset=utf-8,No,Nama Murid,18.1 Tepat,18.2 Label Score,Kesiapan Belajar,Show and Tell,Exit Ticket\n";
+      let csvContent = "data:text/csv;charset=utf-8,No,Nama Murid,Skor Total,Jawaban Benar,Kesiapan Belajar,Show and Tell,Exit Ticket\n";
       Object.values(players).forEach((p, idx) => {
         const labelsCorrect = Math.min(7, p.correctCount || 0);
         let readiness = labelsCorrect >= 6 ? "Sangat Siap" : (labelsCorrect >= 4 ? "Siap" : "Belum Siap");
-        csvContent += `${idx + 1},"${p.name}",Tepat,${labelsCorrect}/7,${readiness},${p.showAndTell ? 'Selesai' : 'Perlu Bantuan'},${p.exitTicket || '-'}\n`;
+        csvContent += `${idx + 1},"${p.name}",${p.score || 0},${labelsCorrect}/7,${readiness},${p.showAndTell ? 'Selesai' : 'Perlu Bantuan'},${p.exitTicket || '-'}\n`;
       });
 
       const encodedUri = encodeURI(csvContent);
@@ -1442,9 +1677,15 @@
     }
 
     function leaveCurrentRoom() {
+      stopQuestionTimer();
+      if (currentRoomCode) {
+        off(ref(db, `rooms/${currentRoomCode}`));
+        off(ref(db, `rooms/${currentRoomCode}/status`));
+      }
       currentRoomCode = null;
       myStudentId = null;
       studentSelfIndex = 0;
+      hasStartedPlaying = false;
       document.getElementById('header-room-info').classList.add('hidden');
       document.getElementById('exit-room-btn').classList.add('hidden');
       showScreen('screen-role-select');
