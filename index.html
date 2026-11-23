@@ -3,10 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Body - Real-Time Self-Paced Classroom Game (Grade 3)</title>
+  <title>My Body</title>
 
-  <!-- Inline SVG Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧍‍♂️</text></svg>">
+  <!-- Inline SVG Favicon (Ganti href dengan logo-kita.png jika ingin pakai gambar lokal) -->
+  <!-- Ubah menjadi seperti ini: -->
+  <link rel="icon" href="logo2.png" type="image/png">
   
   <!-- Google Fonts: Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -155,26 +156,19 @@
     .body-part-hotspot {
       cursor: pointer;
       transition: all 0.2s ease;
-      fill-opacity: 0.12;
-      stroke-width: 3px;
+      fill-opacity: 0.10;
+      stroke-width: 2.5px;
       stroke-dasharray: 4 4;
     }
 
-    .body-part-hotspot:hover, .body-part-hotspot.active-target {
-      fill-opacity: 0.45;
+    .body-part-hotspot:hover {
+      fill-opacity: 0.30;
       stroke-dasharray: none;
-      stroke-width: 4px;
-      animation: pulseHighlight 1.5s infinite alternate;
     }
 
     .host-view .body-part-hotspot {
       pointer-events: none !important;
       cursor: default !important;
-    }
-
-    @keyframes pulseHighlight {
-      0% { fill-opacity: 0.25; stroke-width: 3px; }
-      100% { fill-opacity: 0.55; stroke-width: 5px; }
     }
 
     .pin-badge {
@@ -262,10 +256,15 @@
         </button>
       </div>
 
-      <!-- Exit / Reset Button -->
-      <button id="exit-room-btn" onclick="leaveCurrentRoom()" class="tactile-btn btn-sand px-3 py-1.5 text-xs sm:text-sm hidden">
-        <span>🚪 Exit</span>
-      </button>
+      <!-- Navigation Action Buttons (Back & Exit) -->
+      <div class="flex items-center gap-2">
+        <button id="header-back-btn" onclick="handleHeaderBack()" class="tactile-btn btn-mustard px-3 py-1.5 text-xs sm:text-sm hidden">
+          <span>↩ Back</span>
+        </button>
+        <button id="exit-room-btn" onclick="leaveCurrentRoom()" class="tactile-btn btn-sand px-3 py-1.5 text-xs sm:text-sm hidden">
+          <span>Exit</span>
+        </button>
+      </div>
 
     </div>
   </header>
@@ -284,17 +283,17 @@
         <div>
           <h2 class="font-heading text-2xl sm:text-3xl font-700 text-ink">My Body Classroom Game</h2>
           <p class="text-xs sm:text-sm text-stone-600 font-medium mt-1">
-            Real-Time Self-Paced Learning & Assessment — RPP Pertemuan 15
+            Real-Time Self-Paced Learning & Assessment
           </p>
         </div>
 
         <div class="w-full flex flex-col sm:flex-row gap-3 mt-4">
           <button onclick="setupTeacherHost()" class="tactile-btn btn-coral flex-1 py-4 text-base gap-2">
-            <span>👨‍🏫</span>
-            <span>Guru / Host (Admin)</span>
+            
+            <span>Guru / Host</span>
           </button>
           <button onclick="showStudentJoinForm()" class="tactile-btn btn-sage flex-1 py-4 text-base gap-2">
-            <span>🙋‍♂️</span>
+            
             <span>Siswa / Peserta</span>
           </button>
         </div>
@@ -336,7 +335,7 @@
         </div>
 
         <button onclick="submitStudentJoin()" class="tactile-btn btn-sage w-full py-3.5 text-base mt-2">
-          Masuk ke Kelas 🚀
+          Masuk ke Kelas
         </button>
 
         <div id="join-error-msg" class="hidden text-xs font-bold text-coral text-center bg-coral-light p-2.5 rounded-xl border border-coral/30">
@@ -369,13 +368,13 @@
 
           <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-1">
             <button onclick="copyStudentJoinLink()" class="tactile-btn btn-sand px-3 py-1.5 text-xs gap-1.5">
-              <span>📋</span> Salin Link Join
+              <span></span> Copy Link Join
             </button>
             <button onclick="openStudentSimTab()" class="tactile-btn btn-sand px-3 py-1.5 text-xs gap-1.5">
-              <span>🖥️</span> Tab Simulasi Siswa
+              <span></span> Student Simulation Tab
             </button>
             <button onclick="toggleQROverlay()" class="tactile-btn btn-sand px-3 py-1.5 text-xs gap-1.5">
-              <span>📱</span> QR Code
+              <span></span> QR Code
             </button>
           </div>
         </div>
@@ -392,7 +391,7 @@
       <div id="teacher-start-panel" class="tactile-card p-5 bg-white flex flex-col gap-4">
         <div class="border-b border-sandborder pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
-            <h3 class="font-heading text-lg font-700 text-ink">⚙️ Pengaturan Room Game (Sebelum Mulai)</h3>
+            <h3 class="font-heading text-lg font-700 text-ink">⚙️ Pengaturan Room Game</h3>
             <p class="text-xs text-stone-500 font-semibold">
               Atur mode permainan, batas waktu per soal, dan opsi acak soal sebelum menekan tombol mulai.
             </p>
@@ -435,33 +434,38 @@
           <div class="bg-sand/40 p-3 rounded-xl border border-sandborder">
             <label class="block text-xs font-bold text-stone-700 mb-1.5">4. Bantuan Word Bank (Mode 2)</label>
             <select id="setting-allow-hint" class="w-full p-2.5 rounded-xl border-2 border-sandborder bg-white text-xs font-bold text-ink outline-none focus:border-coral">
-              <option value="true" selected>Izinkan Tombol Bantuan</option>
-              <option value="false">Sembunyikan (Ujian Mandiri)</option>
+              <option value="false" selected>Sembunyikan (Ujian Mandiri)</option>
+              <option value="true">Izinkan Tombol Bantuan</option>
             </select>
           </div>
         </div>
 
         <div class="flex justify-end pt-2">
           <button onclick="teacherStartGame()" class="tactile-btn btn-sage w-full sm:w-auto px-8 py-3.5 text-base gap-2">
-            <span>🚀</span> Mulai Game Sekarang!
+            <span></span> Mulai Game Sekarang!
           </button>
         </div>
       </div>
 
-      <!-- Active Game Info Banner (Shown while PLAYING) -->
+      <!-- Active Game Info Banner (Shown while PLAYING or FINISHED) -->
       <div id="teacher-active-banner" class="hidden tactile-card p-4 bg-sage-light/60 border-sage/40 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <span class="text-2xl animate-pulse">📡</span>
           <div>
-            <h3 class="font-heading text-base font-700 text-sage">Sesi Sedang Berlangsung!</h3>
+            <h3 id="teacher-banner-title" class="font-heading text-base font-700 text-sage">Sesi Sedang Berlangsung!</h3>
             <p id="teacher-active-rules-text" class="text-xs font-semibold text-stone-600">
               Mode 1 • Timer: 15 detik/soal • Soal Acak
             </p>
           </div>
         </div>
-        <button onclick="teacherFinishSession()" class="tactile-btn btn-coral px-5 py-2.5 text-xs gap-1.5">
-          <span>⏹</span> Akhiri Sesi & Buka Rekap Nilai
-        </button>
+        <div class="flex flex-wrap items-center gap-2 w-full sm:w-auto justify-end">
+          <button onclick="teacherResetToLobby()" class="tactile-btn btn-mustard px-4 py-2.5 text-xs gap-1.5">
+            <span>🔄</span> Back / Ulangi (Room Tetap)
+          </button>
+          <button onclick="teacherFinishSession()" class="tactile-btn btn-coral px-4 py-2.5 text-xs gap-1.5">
+            <span>⏹</span> Akhiri & Rekap Nilai
+          </button>
+        </div>
       </div>
 
       <!-- LIVE MONITORING DASHBOARD (LEADERBOARD & LIVE STUDENT REPORT) -->
@@ -472,7 +476,7 @@
           <div>
             <div class="flex items-center justify-between pb-3 border-b border-sandborder mb-3">
               <h3 class="font-heading text-lg font-700 text-ink">
-                🏆 Papan Skor Realtime
+                Papan Skor Realtime
               </h3>
               <span class="text-xs font-mono font-bold text-sage animate-pulse">● Live</span>
             </div>
@@ -489,7 +493,7 @@
             <div class="flex items-center justify-between pb-3 border-b border-sandborder mb-3">
               <div>
                 <h3 class="font-heading text-lg font-700 text-ink">
-                  📊 Laporan Pengerjaan Siswa (<span id="roster-count-num" class="text-sage">0</span> Anak)
+                  Laporan Pengerjaan Siswa (<span id="roster-count-num" class="text-sage">0</span> Anak)
                 </h3>
                 <p class="text-[11px] text-stone-500 font-semibold">Pantau progres & status jawaban tiap soal secara langsung</p>
               </div>
@@ -511,7 +515,7 @@
               <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-coral inline-block"></span> Salah/Habis</span>
               <span class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded-sm bg-mustard inline-block"></span> Dikerjakan</span>
             </div>
-            <span class="font-mono text-sage font-bold">RPP 15 Compliant</span>
+            <span class="font-mono text-sage font-bold">Vell Market</span>
           </div>
         </div>
 
@@ -527,20 +531,20 @@
         
         <div>
           <h2 id="student-my-name" class="font-heading text-2xl font-700 text-ink">Nama Siswa</h2>
-          <p class="text-xs font-mono font-bold text-sage mt-0.5">Status: Sudah Masuk Kelas</p>
+          <p class="text-xs font-mono font-bold text-sage mt-0.5">Status: Ready di Ruang Tunggu</p>
         </div>
 
         <div class="w-full bg-sand p-4 rounded-2xl border-2 border-dashed border-sandborder">
-          <span class="text-xs font-bold text-stone-500 uppercase block mb-1">Menunggu Guru Memulai</span>
+          <span class="text-xs font-bold text-stone-500 uppercase block mb-1">Menunggu Guru Memulai Game</span>
           <p class="text-sm font-semibold text-stone-700">
-            Bersiaplah! Setelah guru memulai game, kamu akan mengerjakan 7 soal dan otomatis lanjut ke soal berikutnya setelah menjawab.
+            Bersiaplah! Setelah guru menekan tombol mulai, soal akan langsung muncul di layarmu.
           </p>
         </div>
 
       </div>
     </section>
 
-    <!-- 4. STUDENT GAMEPLAY CONTAINER (SELF-PACED MODE 1 & MODE 2) -->
+    <!-- 4. STUDENT GAMEPLAY CONTAINER (SELF-PACED MODE 1 & MODE 2 - NO CLUE SPOILERS) -->
     <section id="screen-gameplay" class="w-full flex flex-col items-center gap-4 hidden">
       
       <!-- Top Status Banner -->
@@ -561,7 +565,7 @@
             <span id="student-timer-val">15</span>s
           </div>
 
-          <button id="voice-replay-btn" onclick="replayCurrentVoicePrompt()" class="tactile-btn btn-mustard p-2.5 rounded-full" title="Replay Voice">
+          <button id="voice-replay-btn" onclick="replayCurrentVoicePrompt()" class="tactile-btn btn-mustard p-2.5 rounded-full" title="Dengarkan Ulang">
             🔊
           </button>
           
@@ -571,7 +575,7 @@
         </div>
       </div>
 
-      <!-- MODE 1 INTERACTIVE SVG CHARACTER BOARD -->
+      <!-- MODE 1 INTERACTIVE SVG CHARACTER BOARD (NO BLINKING HINT) -->
       <div id="mode1-board" class="tactile-card w-full max-w-4xl p-4 flex flex-col md:flex-row items-center justify-center gap-6 bg-white hidden">
         
         <div class="relative w-full max-w-[360px] sm:max-w-[400px] flex justify-center py-2">
@@ -582,19 +586,19 @@
           <div class="bg-sand p-4 rounded-2xl border border-sandborder">
             <h3 class="font-heading text-base font-700 text-ink mb-1">Instruksi:</h3>
             <p class="text-xs text-stone-600 leading-relaxed">
-              Dengarkan ucapan di HP, lalu ketuk bagian tubuh anak yang sesuai pada gambar!
+              Dengarkan ucapan atau baca perintah di atas, lalu cari dan ketuk sendiri bagian tubuh yang tepat pada gambar!
             </p>
           </div>
 
           <div id="m1-feedback-box" class="min-h-[90px] bg-white p-3 rounded-2xl border-2 border-dashed border-sandborder flex flex-col items-center justify-center text-center">
-            <span class="text-xl mb-1">👆</span>
-            <p class="text-xs font-semibold text-stone-500">Ketuk gambar bagian tubuh!</p>
+            <span class="text-xl mb-1">🤔</span>
+            <p class="text-xs font-semibold text-stone-500">Pilih bagian tubuh yang sesuai!</p>
           </div>
         </div>
 
       </div>
 
-      <!-- MODE 2 SPELLING BOARD -->
+      <!-- MODE 2 SPELLING BOARD (NO WORD SPOILER IN PROMPT) -->
       <div id="mode2-board" class="tactile-card w-full max-w-4xl p-4 flex flex-col md:flex-row items-center justify-center gap-6 bg-white hidden">
         
         <div class="relative w-full max-w-[340px] flex justify-center py-2">
@@ -604,8 +608,10 @@
         <div class="w-full md:w-96 flex flex-col gap-3">
           
           <div class="flex items-center justify-between">
-            <span id="m2-target-pin-label" class="text-xs font-bold text-stone-500">Pin Target #1</span>
-            <button id="wordbank-toggle-btn" onclick="toggleWordBankHint()" class="tactile-btn btn-mustard text-xs px-2.5 py-1">
+            <span id="m2-target-pin-label" class="text-xs font-bold text-coral bg-coral-light px-2.5 py-1 rounded-lg border border-coral/30">
+              Target: Pin #1
+            </span>
+            <button id="wordbank-toggle-btn" onclick="toggleWordBankHint()" class="tactile-btn btn-mustard text-xs px-2.5 py-1 hidden">
               💡 Word Bank Hint
             </button>
           </div>
@@ -636,7 +642,7 @@
           </div>
 
           <div id="m2-feedback-status" class="text-center font-bold text-xs text-stone-600 min-h-[30px] flex items-center justify-center">
-            Susun huruf bahasa Inggris sesuai nomor target!
+            Lihat nomor Pin yang ditunjuk pada gambar, lalu eja bahasa Inggrisnya!
           </div>
 
         </div>
@@ -645,11 +651,11 @@
 
     </section>
 
-    <!-- 5. SHOW & TELL + EXIT TICKET REFLECTION (STUDENT FINAL STEP) -->
+    <!-- 5. SHOW & TELL + EXIT TICKET REFLECTION (STUDENT FINAL STEP + BACK TO WAITING) -->
     <section id="screen-exit-ticket" class="w-full max-w-lg mx-auto flex flex-col gap-4 hidden">
       
       <div class="tactile-card p-5 bg-white text-center flex flex-col items-center gap-3">
-        <span class="text-3xl">🎉</span>
+        <span class="text-3xl"></span>
         <h2 class="font-heading text-xl font-700 text-ink">Semua Soal Selesai!</h2>
         <div class="bg-sand px-4 py-2 rounded-xl border border-sandborder font-mono font-bold text-sm">
           Skor Akhir Kamu: <span id="student-final-score" class="text-coral text-lg">0</span> Poin
@@ -684,6 +690,16 @@
         <div id="exit-ticket-submitted-msg" class="hidden text-xs font-bold text-sage bg-sage-light p-2.5 rounded-xl border border-sage/30 mt-2">
           ✅ Refleksi tersimpan! Jawabanmu sudah terkirim ke Pak/Bu Guru.
         </div>
+
+        <!-- Back to Waiting Room Button -->
+        <div class="pt-3 border-t border-sandborder mt-2 flex flex-col sm:flex-row gap-2">
+          <button onclick="studentBackToWaiting()" class="tactile-btn btn-mustard flex-1 py-3 text-xs sm:text-sm gap-1.5">
+            <span></span> Back To Lobby
+          </button>
+          <button onclick="leaveCurrentRoom()" class="tactile-btn btn-sand py-3 px-4 text-xs sm:text-sm gap-1.5">
+            <span></span> Exit
+          </button>
+        </div>
       </div>
 
     </section>
@@ -699,12 +715,15 @@
             <p class="text-xs text-stone-500 font-semibold">Bahasa Inggris SD Kelas III — Parts of the Body</p>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
             <button onclick="exportAssessmentCSV()" class="tactile-btn btn-sage px-4 py-2.5 text-sm gap-2">
               <span>📥</span> Export CSV / Excel
             </button>
+            <button onclick="teacherResetToLobby()" class="tactile-btn btn-mustard px-4 py-2.5 text-xs gap-1.5">
+              <span>🔄</span> Ulangi / Mode Baru
+            </button>
             <button onclick="showScreen('screen-teacher-dashboard')" class="tactile-btn btn-sand px-3 py-2.5 text-xs">
-              ← Kembali ke Dashboard
+              ← Dashboard
             </button>
           </div>
         </div>
@@ -734,7 +753,7 @@
   </main>
 
   <footer class="w-full bg-white border-t border-sandborder py-2.5 px-4 text-center text-xs text-stone-500 font-semibold">
-    RPP Pertemuan 15 • Real-time Firebase Synchronization • Class III Elementary English
+    Game Edukasi Parts of Body
   </footer>
 
   <!-- FIREBASE REALTIME DATABASE & APPLICATION ENGINE -->
@@ -782,8 +801,9 @@
     let studentSelfIndex = 0;
     let studentScore = 0;
     let studentCorrectCount = 0;
-    let studentAnswerHistory = []; // Array of { word, correct }
-    let hasStartedPlaying = false;
+    let studentAnswerHistory = [];
+    let currentRoundId = 0;
+    let activeRoundPlayed = 0;
     let isTransitioning = false;
 
     // Timer State
@@ -795,7 +815,8 @@
       mode: 1,
       timeLimit: 15,
       shuffle: true,
-      allowHint: true
+      allowHint: false,
+      roundId: 1
     };
 
     let m2CurrentSpelling = [];
@@ -870,7 +891,7 @@
     }
 
     /* ==========================================================================
-       3. NAVIGATION & ROLE FLOWS
+       3. NAVIGATION & HEADER BACK / EXIT FLOWS
        ========================================================================== */
     function showScreen(screenId) {
       const screens = [
@@ -887,6 +908,25 @@
         if (el) el.classList.add('hidden');
       });
       document.getElementById(screenId).classList.remove('hidden');
+
+      // Show/Hide Header Back Button contextually
+      const backBtn = document.getElementById('header-back-btn');
+      if (currentRole === 'host' && (screenId === 'screen-assessment-recap' || gameState.status !== 'LOBBY')) {
+        backBtn.classList.remove('hidden');
+      } else if (currentRole === 'student' && (screenId === 'screen-exit-ticket' || screenId === 'screen-gameplay')) {
+        backBtn.classList.remove('hidden');
+      } else {
+        backBtn.classList.add('hidden');
+      }
+    }
+
+    function handleHeaderBack() {
+      playSoundEffect('click');
+      if (currentRole === 'host') {
+        teacherResetToLobby();
+      } else if (currentRole === 'student') {
+        studentBackToWaiting();
+      }
     }
 
     function showRoleSelection() {
@@ -921,7 +961,7 @@
     }
 
     /* ==========================================================================
-       4. TEACHER HOST SETUP, ROOM SETTINGS & LIVE REPORT DASHBOARD
+       4. TEACHER HOST SETUP, ROOM SETTINGS, RESET/REPEAT & LIVE REPORT
        ========================================================================== */
     async function setupTeacherHost() {
       currentRole = 'host';
@@ -946,7 +986,8 @@
         mode: 1,
         timeLimit: 15,
         shuffle: true,
-        allowHint: true,
+        allowHint: false,
+        roundId: 1,
         createdAt: Date.now()
       });
 
@@ -959,7 +1000,8 @@
         gameState.mode = roomData.mode || 1;
         gameState.timeLimit = roomData.timeLimit !== undefined ? roomData.timeLimit : 15;
         gameState.shuffle = roomData.shuffle !== undefined ? roomData.shuffle : true;
-        gameState.allowHint = roomData.allowHint !== undefined ? roomData.allowHint : true;
+        gameState.allowHint = roomData.allowHint !== undefined ? roomData.allowHint : false;
+        gameState.roundId = roomData.roundId || 1;
 
         const players = roomData.players || {};
         renderTeacherLiveReport(players);
@@ -985,12 +1027,15 @@
       const badge = document.getElementById('teacher-status-badge');
       const startPanel = document.getElementById('teacher-start-panel');
       const activeBanner = document.getElementById('teacher-active-banner');
+      const backBtn = document.getElementById('header-back-btn');
 
       if (gameState.status === 'PLAYING') {
         badge.innerText = `LIVE • MODE ${gameState.mode}`;
         badge.className = "bg-sage-light text-sage text-xs font-bold px-3 py-1 rounded-full border border-sage/40";
         startPanel.classList.add('hidden');
         activeBanner.classList.remove('hidden');
+        document.getElementById('teacher-banner-title').innerText = "Sesi Sedang Berlangsung!";
+        backBtn.classList.remove('hidden');
 
         const timerText = gameState.timeLimit > 0 ? `${gameState.timeLimit} detik/soal` : 'Bebas Waktu';
         const orderText = gameState.shuffle ? 'Soal Acak' : 'Soal Berurutan';
@@ -1000,12 +1045,15 @@
         badge.innerText = "SESSION FINISHED";
         badge.className = "bg-coral-light text-coral text-xs font-bold px-3 py-1 rounded-full border border-coral/40";
         startPanel.classList.add('hidden');
-        activeBanner.classList.add('hidden');
+        activeBanner.classList.remove('hidden');
+        document.getElementById('teacher-banner-title').innerText = "Sesi Selesai! Klik Back/Ulangi untuk main lagi di room ini.";
+        backBtn.classList.remove('hidden');
       } else {
         badge.innerText = "LOBBY READY";
         badge.className = "bg-mustard-light text-mustard-shadow text-xs font-bold px-3 py-1 rounded-full border border-mustard/40";
         startPanel.classList.remove('hidden');
         activeBanner.classList.add('hidden');
+        backBtn.classList.add('hidden');
       }
 
       if (playerList.length === 0) {
@@ -1014,7 +1062,7 @@
         return;
       }
 
-      // 1. Live Leaderboard Render (Sorted by score desc, then correctCount desc)
+      // 1. Live Leaderboard Render
       const sorted = [...playerList].sort((a, b) => {
         const scoreDiff = (b[1].score || 0) - (a[1].score || 0);
         if (scoreDiff !== 0) return scoreDiff;
@@ -1042,13 +1090,12 @@
         `;
       }).join('');
 
-      // 2. Live Student Report Matrix Render (Question-by-Question Boxes)
+      // 2. Live Student Report Matrix Render
       matrixBox.innerHTML = playerList.map(([id, p]) => {
         const progress = p.progress || 0;
         const isFinished = p.completed || progress >= 7;
         const history = p.history || [];
 
-        // Build 7 question status boxes
         let qBoxesHtml = '';
         for (let i = 0; i < 7; i++) {
           const item = history[i];
@@ -1073,7 +1120,7 @@
                 <span class="font-bold text-xs text-ink truncate">${p.name}</span>
               </div>
               <span class="px-2 py-0.5 rounded-md text-[10px] font-bold shrink-0 ${isFinished ? 'bg-sage text-white' : (gameState.status === 'PLAYING' ? 'bg-mustard-light text-mustard-shadow' : 'bg-sand text-stone-600')}">
-                ${isFinished ? '✓ Selesai' : (gameState.status === 'PLAYING' ? `Soal ${progress + 1}/7` : 'Menunggu')}
+                ${isFinished ? '✓ Selesai' : (gameState.status === 'PLAYING' ? `Soal ${progress + 1}/7` : 'Standby')}
               </span>
             </div>
 
@@ -1111,6 +1158,35 @@
       });
     }
 
+    // Teacher Back / Reset Room without kicking students out
+    async function teacherResetToLobby() {
+      if (!currentRoomCode) return;
+      playSoundEffect('click');
+
+      const snap = await get(ref(db, `rooms/${currentRoomCode}/players`));
+      const players = snap.val() || {};
+      const nextRound = (gameState.roundId || 1) + 1;
+
+      const updates = {
+        status: 'LOBBY',
+        roundId: nextRound
+      };
+
+      // Reset all connected students' progress and score for the new round
+      Object.keys(players).forEach(pid => {
+        updates[`players/${pid}/score`] = 0;
+        updates[`players/${pid}/correctCount`] = 0;
+        updates[`players/${pid}/progress`] = 0;
+        updates[`players/${pid}/history`] = [];
+        updates[`players/${pid}/completed`] = false;
+        updates[`players/${pid}/exitTicket`] = null;
+        updates[`players/${pid}/showAndTell`] = false;
+      });
+
+      await update(ref(db, `rooms/${currentRoomCode}`), updates);
+      showScreen('screen-teacher-dashboard');
+    }
+
     async function teacherFinishSession() {
       if (!currentRoomCode) return;
       await update(ref(db, `rooms/${currentRoomCode}`), {
@@ -1120,7 +1196,7 @@
     }
 
     /* ==========================================================================
-       5. STUDENT JOIN & INDEPENDENT SELF-PACED SYNC (BUG-FREE LISTENER)
+       5. STUDENT JOIN, WAITING ROOM & BACK TO LOBBY FLOW
        ========================================================================== */
     async function submitStudentJoin() {
       const roomInput = document.getElementById('join-room-input').value.trim().toUpperCase();
@@ -1145,12 +1221,7 @@
       currentRoomCode = roomInput;
       myStudentId = 'std_' + Math.random().toString(36).substring(2, 9);
 
-      // Reset local student state
-      studentSelfIndex = 0;
-      studentScore = 0;
-      studentCorrectCount = 0;
-      studentAnswerHistory = [];
-      hasStartedPlaying = false;
+      resetLocalStudentState();
 
       document.getElementById('header-room-code').innerText = currentRoomCode;
       document.getElementById('header-room-info').classList.remove('hidden');
@@ -1170,7 +1241,7 @@
       document.getElementById('student-my-avatar').innerText = selectedAvatar;
       document.getElementById('student-my-name').innerText = nameInput;
 
-      // Listen ONLY to Room Status & Settings (NOT players list, so other students' updates won't reset this screen!)
+      // Listen to Room Status & RoundId
       onValue(ref(db, `rooms/${currentRoomCode}/status`), async (statusSnap) => {
         const status = statusSnap.val();
         if (!status) return;
@@ -1178,27 +1249,31 @@
         gameState.status = status;
 
         if (status === 'LOBBY') {
-          hasStartedPlaying = false;
           stopQuestionTimer();
+          resetLocalStudentState();
+          document.getElementById('exit-ticket-submitted-msg').classList.add('hidden');
           showScreen('screen-student-waiting');
-        } else if (status === 'PLAYING' && !hasStartedPlaying) {
-          // Fetch room settings once when game starts
+        } else if (status === 'PLAYING') {
           const fullRoomSnap = await get(ref(db, `rooms/${currentRoomCode}`));
           const rData = fullRoomSnap.val() || {};
-          gameState.mode = rData.mode || 1;
-          gameState.timeLimit = rData.timeLimit !== undefined ? rData.timeLimit : 15;
-          gameState.shuffle = rData.shuffle !== undefined ? rData.shuffle : true;
-          gameState.allowHint = rData.allowHint !== undefined ? rData.allowHint : true;
+          const serverRound = rData.roundId || 1;
 
-          // Prepare question queue (shuffled or sequential)
-          studentQuestions = [...VOCAB_DATA];
-          if (gameState.shuffle) {
-            studentQuestions.sort(() => Math.random() - 0.5);
+          // Start only if this round hasn't been played yet by this student
+          if (activeRoundPlayed !== serverRound) {
+            activeRoundPlayed = serverRound;
+            gameState.mode = rData.mode || 1;
+            gameState.timeLimit = rData.timeLimit !== undefined ? rData.timeLimit : 15;
+            gameState.shuffle = rData.shuffle !== undefined ? rData.shuffle : true;
+            gameState.allowHint = rData.allowHint !== undefined ? rData.allowHint : false;
+
+            resetLocalStudentState();
+            studentQuestions = [...VOCAB_DATA];
+            if (gameState.shuffle) {
+              studentQuestions.sort(() => Math.random() - 0.5);
+            }
+
+            renderStudentSelfPacedQuestion();
           }
-
-          hasStartedPlaying = true;
-          studentSelfIndex = 0;
-          renderStudentSelfPacedQuestion();
         } else if (status === 'FINISHED') {
           stopQuestionTimer();
           document.getElementById('student-final-score').innerText = studentScore;
@@ -1209,8 +1284,40 @@
       showScreen('screen-student-waiting');
     }
 
+    function resetLocalStudentState() {
+      studentSelfIndex = 0;
+      studentScore = 0;
+      studentCorrectCount = 0;
+      studentAnswerHistory = [];
+      isTransitioning = false;
+      m2CurrentSpelling = [];
+      showWordBankHint = false;
+    }
+
+    // Student Back button to return to Waiting Room
+    async function studentBackToWaiting() {
+      stopQuestionTimer();
+      playSoundEffect('click');
+      resetLocalStudentState();
+      document.getElementById('exit-ticket-submitted-msg').classList.add('hidden');
+
+      if (currentRole === 'student' && myStudentId && currentRoomCode) {
+        await update(ref(db, `rooms/${currentRoomCode}/players/${myStudentId}`), {
+          score: 0,
+          correctCount: 0,
+          progress: 0,
+          history: [],
+          completed: false,
+          exitTicket: null,
+          showAndTell: false
+        });
+      }
+
+      showScreen('screen-student-waiting');
+    }
+
     /* ==========================================================================
-       6. STUDENT SELF-PACED GAMEPLAY RENDER & TIMER CONTROLLER
+       6. STUDENT SELF-PACED GAMEPLAY RENDER & TIMER CONTROLLER (ANTI-SPOILER)
        ========================================================================== */
     function stopQuestionTimer() {
       if (questionTimerInterval) {
@@ -1286,30 +1393,35 @@
 
       const target = studentQuestions[studentSelfIndex];
       document.getElementById('gameplay-q-num').innerText = studentSelfIndex + 1;
-      document.getElementById('gameplay-mode-tag').innerText = `Mode ${gameState.mode}: ${gameState.mode === 1 ? 'Listen & Touch' : 'Spelling Label'}`;
-      document.getElementById('gameplay-prompt-title').innerText = `"${target.tpr}"`;
-
-      // Speak prompt if Mode 1
-      if (gameState.mode === 1 && currentRole === 'student') {
-        speakText(target.tpr);
-      }
 
       if (gameState.mode === 1) {
+        // MODE 1: Listen & Touch (Show TPR prompt, NO visual blinking spoiler)
+        document.getElementById('gameplay-mode-tag').innerText = "Mode 1: Listen & Touch";
+        document.getElementById('gameplay-prompt-title').innerText = `"${target.tpr}"`;
+        document.getElementById('voice-replay-btn').classList.remove('hidden');
+
+        if (currentRole === 'student') {
+          speakText(target.tpr);
+        }
+
         document.getElementById('mode1-board').classList.remove('hidden');
         document.getElementById('mode2-board').classList.add('hidden');
-        document.getElementById('svg-character-container-m1').innerHTML = createSVGCharacterMarkup('m1');
+        document.getElementById('svg-character-container-m1').innerHTML = createSVGCharacterMarkup('m1', null);
 
         const fb = document.getElementById('m1-feedback-box');
         fb.className = "min-h-[90px] bg-white p-3 rounded-2xl border-2 border-dashed border-sandborder flex flex-col items-center justify-center text-center";
-        fb.innerHTML = `<span class="text-xl mb-1">👆</span><p class="text-xs font-semibold text-stone-500">Ketuk gambar bagian tubuh yang sesuai!</p>`;
-
-        highlightTargetHotspot(target.id, 'm1');
+        fb.innerHTML = `<span class="text-xl mb-1">🤔</span><p class="text-xs font-semibold text-stone-500">Pilih bagian tubuh yang sesuai!</p>`;
       } else {
+        // MODE 2: Spelling Label (NO English word in header prompt, NO voice spoiler!)
+        document.getElementById('gameplay-mode-tag').innerText = "Mode 2: Spelling Label";
+        document.getElementById('gameplay-prompt-title').innerText = `Eja bagian tubuh nomor Pin #${target.pin}!`;
+        document.getElementById('voice-replay-btn').classList.add('hidden');
+
         document.getElementById('mode1-board').classList.add('hidden');
         document.getElementById('mode2-board').classList.remove('hidden');
-        document.getElementById('svg-character-container-m2').innerHTML = createSVGCharacterMarkup('m2');
+        // Highlight ONLY the Pin badge number in yellow/mustard so student knows which part to spell
+        document.getElementById('svg-character-container-m2').innerHTML = createSVGCharacterMarkup('m2', target.id);
 
-        // Toggle Word Bank button visibility based on teacher setting
         const wbBtn = document.getElementById('wordbank-toggle-btn');
         if (gameState.allowHint) {
           wbBtn.classList.remove('hidden');
@@ -1318,8 +1430,7 @@
           document.getElementById('wordbank-hint-box').classList.add('hidden');
         }
 
-        document.getElementById('m2-target-pin-label').innerText = `Pin Target #${target.pin}`;
-        highlightTargetHotspot(target.id, 'm2');
+        document.getElementById('m2-target-pin-label').innerText = `Target: Pin #${target.pin}`;
         renderM2Slots(target.english.length);
         renderM2Tiles(target.english);
         document.getElementById('m2-feedback-status').innerHTML = `<span class="text-stone-500">Susun huruf bahasa Inggris untuk Pin #${target.pin}!</span>`;
@@ -1329,15 +1440,16 @@
     }
 
     function replayCurrentVoicePrompt() {
+      if (gameState.mode !== 1) return;
       const target = studentQuestions[studentSelfIndex];
       if (target) speakText(target.tpr);
       playSoundEffect('click');
     }
 
     /* ==========================================================================
-       7. SVG CHARACTER & TOUCH HANDLER (SELF-PACED AUTO-ADVANCE)
+       7. SVG CHARACTER & TOUCH HANDLER (NO CLUE SPOILER)
        ========================================================================== */
-    function createSVGCharacterMarkup(modeSuffix) {
+    function createSVGCharacterMarkup(modeSuffix, mode2PinTargetId) {
       const isHostClass = currentRole === 'host' ? 'host-view' : '';
 
       return `
@@ -1401,16 +1513,25 @@
           </g>
 
           <g id="hotspots-group">
-            ${VOCAB_DATA.map(v => `
-              <g class="hotspot-wrapper" onclick="handleBodyPartTouch('${v.id}')">
-                <circle id="hotspot-${v.id}-${modeSuffix}" cx="${v.x}" cy="${v.y}" r="${v.r}" 
-                        class="body-part-hotspot stroke-coral fill-coral" />
-                <g class="pin-badge" transform="translate(${v.x + (v.x > 200 ? 25 : -40)}, ${v.y - 12})">
-                  <rect width="26" height="26" rx="8" fill="#E05A47" stroke="#1E242B" stroke-width="2"/>
-                  <text x="13" y="18" text-anchor="middle" fill="#FFFFFF" font-family="Space Grotesk" font-size="14" font-weight="700">${v.pin}</text>
+            ${VOCAB_DATA.map(v => {
+              const isPinHighlighted = (modeSuffix === 'm2' && mode2PinTargetId === v.id);
+              const badgeFill = isPinHighlighted ? '#E8A838' : '#E05A47';
+              const textFill = isPinHighlighted ? '#1E242B' : '#FFFFFF';
+              const circleStroke = isPinHighlighted ? '#E8A838' : '#E05A47';
+              const circleOpacity = isPinHighlighted ? '0.35' : '0.08';
+
+              return `
+                <g class="hotspot-wrapper" onclick="handleBodyPartTouch('${v.id}')">
+                  <circle id="hotspot-${v.id}-${modeSuffix}" cx="${v.x}" cy="${v.y}" r="${v.r}" 
+                          style="stroke: ${circleStroke}; fill: ${circleStroke}; fill-opacity: ${circleOpacity};"
+                          class="body-part-hotspot" />
+                  <g class="pin-badge" transform="translate(${v.x + (v.x > 200 ? 25 : -40)}, ${v.y - 12})">
+                    <rect width="26" height="26" rx="8" fill="${badgeFill}" stroke="#1E242B" stroke-width="2"/>
+                    <text x="13" y="18" text-anchor="middle" fill="${textFill}" font-family="Space Grotesk" font-size="14" font-weight="700">${v.pin}</text>
+                  </g>
                 </g>
-              </g>
-            `).join('')}
+              `;
+            }).join('')}
           </g>
         </svg>
       `;
@@ -1445,12 +1566,6 @@
       await recordAndAdvanceQuestion(isCorrect, target.english);
     }
 
-    function highlightTargetHotspot(partId, modeSuffix) {
-      document.querySelectorAll('.body-part-hotspot').forEach(el => el.classList.remove('active-target'));
-      const activeEl = document.getElementById(`hotspot-${partId}-${modeSuffix}`);
-      if (activeEl) activeEl.classList.add('active-target');
-    }
-
     /* ==========================================================================
        8. MODE 2 SPELLING HANDLERS (SELF-PACED AUTO-ADVANCE)
        ========================================================================== */
@@ -1471,7 +1586,7 @@
       deck.innerHTML = '';
       let letters = word.split('');
       const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-      while (letters.length < word.length + 2) {
+      while (letters.length < word.length + 3) {
         const randChar = alphabet[Math.floor(Math.random() * alphabet.length)];
         if (!letters.includes(randChar)) letters.push(randChar);
       }
@@ -1549,7 +1664,6 @@
        9. FIREBASE STUDENT PROGRESS UPDATE & AUTO-NEXT ENGINE
        ========================================================================== */
     async function recordAndAdvanceQuestion(isCorrect, word) {
-      // Calculate points (Base 100 pts + speed bonus if timer active)
       let earnedPoints = 0;
       if (isCorrect) {
         const speedBonus = (gameState.timeLimit > 0) ? Math.max(0, timeRemaining * 2) : 0;
@@ -1572,7 +1686,6 @@
         });
       }
 
-      // Automatically move to the next question after 1.2s
       setTimeout(() => {
         studentSelfIndex = nextProgress;
         renderStudentSelfPacedQuestion();
@@ -1684,9 +1797,10 @@
       }
       currentRoomCode = null;
       myStudentId = null;
-      studentSelfIndex = 0;
-      hasStartedPlaying = false;
+      activeRoundPlayed = 0;
+      resetLocalStudentState();
       document.getElementById('header-room-info').classList.add('hidden');
+      document.getElementById('header-back-btn').classList.add('hidden');
       document.getElementById('exit-room-btn').classList.add('hidden');
       showScreen('screen-role-select');
     }
@@ -1697,7 +1811,10 @@
     window.setupTeacherHost = setupTeacherHost;
     window.submitStudentJoin = submitStudentJoin;
     window.teacherStartGame = teacherStartGame;
+    window.teacherResetToLobby = teacherResetToLobby;
     window.teacherFinishSession = teacherFinishSession;
+    window.studentBackToWaiting = studentBackToWaiting;
+    window.handleHeaderBack = handleHeaderBack;
     window.toggleQROverlay = toggleQROverlay;
     window.replayCurrentVoicePrompt = replayCurrentVoicePrompt;
     window.toggleWordBankHint = toggleWordBankHint;
